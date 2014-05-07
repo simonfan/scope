@@ -1,0 +1,33 @@
+{
+    "project": {
+        "name": "scope",
+        "version": "0.0.0"
+    },
+    "files": {
+        "src/index.js": {
+            "name": "src/index.js",
+            "modules": {
+                "scope": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "scope": {
+            "name": "scope",
+            "submodules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/index.js",
+            "line": 5,
+            "description": "AMD and CJS module."
+        }
+    },
+    "classes": {},
+    "classitems": [],
+    "warnings": []
+}

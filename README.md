@@ -1,0 +1,3 @@
+# scope[![Build Status](https://secure.travis-ci.org/simonfan/scope.png?branch=master)](http://travis-ci.org/simonfan/scope)
+
+Some module...
