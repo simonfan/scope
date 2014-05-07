@@ -20,7 +20,16 @@ define(function (require, exports, module) {
 		subject = require('subject');
 
 
-	var scope = {
+	var scope = module.exports = subject({
+
+		initialize: function initializeScope(data) {
+
+			// unset initialize
+			this.initialize = void(0);
+
+			// assign data to this object
+			_.assign(this, data);
+		},
 
 		create: function create(data) {
 			return _.extend(_.create(this), data);
@@ -66,7 +75,5 @@ define(function (require, exports, module) {
 
 			return this;
 		},
-	};
-
-	module.exports = _.bind(scope.create, scope);
+	});
 });

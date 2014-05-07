@@ -20,7 +20,7 @@ define('scope',['require','exports','module','lodash','subject'],function (requi
 		subject = require('subject');
 
 
-	var scope = {
+	var scope = module.exports = subject({
 
 		create: function create(data) {
 			return _.extend(_.create(this), data);
@@ -66,8 +66,6 @@ define('scope',['require','exports','module','lodash','subject'],function (requi
 
 			return this;
 		},
-	};
-
-	module.exports = _.bind(scope.create, scope);
+	});
 });
 

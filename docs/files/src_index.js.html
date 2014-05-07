@@ -108,7 +108,7 @@ define(function (require, exports, module) {
 		subject = require(&#x27;subject&#x27;);
 
 
-	var scope = {
+	var scope = module.exports = subject({
 
 		create: function create(data) {
 			return _.extend(_.create(this), data);
@@ -154,9 +154,7 @@ define(function (require, exports, module) {
 
 			return this;
 		},
-	};
-
-	module.exports = _.bind(scope.create, scope);
+	});
 });
 
     </pre>
