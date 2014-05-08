@@ -4,11 +4,25 @@
         "version": "0.0.0"
     },
     "files": {
-        "src/index.js": {
-            "name": "src/index.js",
+        "src/__scope/evaluation.js": {
+            "name": "src/__scope/evaluation.js",
             "modules": {
                 "scope": 1
             },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/iteration.js": {
+            "name": "src/__scope/iteration.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/index.js": {
+            "name": "src/index.js",
+            "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
@@ -22,12 +36,25 @@
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "src/index.js",
+            "file": "src/__scope/evaluation.js",
             "line": 5,
             "description": "AMD and CJS module."
         }
     },
     "classes": {},
-    "classitems": [],
-    "warnings": []
+    "classitems": [
+        {
+            "file": "src/__scope/iteration.js",
+            "line": 21,
+            "description": "For in",
+            "class": "",
+            "module": "scope"
+        }
+    ],
+    "warnings": [
+        {
+            "message": "Missing item type\nFor in",
+            "line": " src/__scope/iteration.js:21"
+        }
+    ]
 }

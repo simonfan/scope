@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>scope - scope</title>
+    <title>src/__scope/evaluation.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,38 +82,100 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1>scope Module</h1>
-<div class="box clearfix meta">
-    
+                        <h1 class="file-heading">File: src/__scope/evaluation.js</h1>
 
-    
+<div class="file">
+    <pre class="code prettyprint linenums">
+//     scope
+//     (c) simonfan
+//     scope is licensed under the MIT terms.
 
-    
-        <div class="foundat">
-            Defined in: <a href="../files/src___scope_evaluation.js.html#l5"><code>src&#x2F;__scope&#x2F;evaluation.js:5</code></a>
-        </div>
-    
+/**
+ * AMD and CJS module.
+ *
+ * @module scope
+ */
 
-    
-</div>
+/* jshint ignore:start */
+if (typeof define !== &#x27;function&#x27;) { var define = require(&#x27;amdefine&#x27;)(module) }
+/* jshint ignore:end */
 
-
-
-<div class="box intro">
-    <p>AMD and CJS module.</p>
-
-</div>
-
+define(function (require, exports, module) {
+	&#x27;use strict&#x27;;
 
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-        
-    </div>
+	var _ = require(&#x27;lodash&#x27;);
 
-    <div class="yui3-u-1-2">
-        
-    </div>
+
+	var defaultOptions = {
+
+	};
+
+	function evaluateArray(scope, properties, opt) {
+		// data = [&#x27;prop1&#x27;, &#x27;prop2&#x27;, ...]
+
+		// get the values
+		var res = _.map(properties, function (property) {
+			return scope[property];
+		});
+
+		return (opt.to &amp;&amp; opt.to === &#x27;object&#x27;) ?
+			// response must be cast to object
+			_.zipObject(properties, res) :
+			// response as is.
+			res;
+	}
+
+	function evaluateObject(scope, obj, opt) {
+		// obj = { prop1: &#x27;default-prop1-value&#x27;, prop2: &#x27;default-prop2-value&#x27;, ... }
+
+		// get the values.
+		var res = _.mapValues(obj, function (defaultValue, property) {
+			var value = scope[property];
+
+			return _.isUndefined(value) ? defaultValue : value;
+		});
+
+		if (opt.to &amp;&amp; opt.to === &#x27;array&#x27;) {
+			// response must be cast to array
+
+			return !opt.order ?
+				// return the array in natural order (whatever that means)
+				_.values(object) :
+				// return the array in the order required.
+				_.map(opt.order, function (key) {
+					return res[key];
+				});
+
+		} else {
+			// response is in the object normal format
+			return res;
+		}
+	}
+
+	function evaluateString(scope, string, options) {
+		return scope[string];
+	}
+
+	exports.evaluate = function evaluate(data, options) {
+		options = options || {};
+
+		if (_.isArray(data)) {
+
+			return evaluateArray(this, data, options);
+
+		} else if (_.isObject(data)) {
+
+			return evaluateObject(this, data, options);
+
+		} else if (_.isString(data)) {
+			// data = &#x27;prop1&#x27;
+			return evaluateString(this, data, options);
+		}
+	};
+});
+
+    </pre>
 </div>
 
                     </div>

@@ -19,37 +19,59 @@ define(function (require, exports, module) {
 	var _ = require('lodash'),
 		subject = require('subject');
 
+	var scope = module.exports = subject();
 
-	var scope = module.exports = subject({
 
-		initialize: function initializeScope(data) {
 
-			// unset initialize
-			this.initialize = void(0);
 
-			// assign data to this object
-			_.assign(this, data);
-		},
+
+	var defaultDescriptor = {
+	//	value:        void(0),
+		configurable: false,
+		writable:     true,
+		enumerable:   false,
+	};
+
+	function extendNonEnum(obj, extensions, descriptor) {
+
+		descriptor = descriptor || {};
+		_.defaults(descriptor, defaultDescriptor);
+
+		_.each(extensions, function (value, key) {
+
+			Object.defineProperty(obj, key, _.extend({
+				value: value,
+			}, descriptor);
+
+		});
+
+		return obj;
+	}
+
+
+
+	// set the extend method of scope to be stealth setter
+	scope.extend = function stealthExtend()
+
+
+	function initializeScope(data) {
+
+		// assign data to this object
+		this.assign(data);
+	}
+
+	Object.defineProperty(scope.prototype, 'initialize', {
+		value : initializeScope,
+		writable : true,
+		enumerable : false,
+		configurable : false
+	});
+
+
+	scope.proto({
 
 		create: function create(data) {
-			return _.extend(_.create(this), data);
-		},
-
-		evaluate: function evaluate(data) {
-			if (_.isArray(data)) {
-				// data = ['prop1', 'prop2', ...]
-				return _.map(data, function (propName) {
-					return this[propName];
-				}, this);
-			} else if (_.isObject(data)) {
-				// data = { prop1: 'default-prop1-value', prop2: 'default-prop2-value', ... }
-				return _.mapValues(data, function (defaultValue, propName) {
-					return this[propName] || defaultValue;
-				}, this);
-			} else if (_.isString(data)) {
-				// data = 'prop1'
-				return this[data];
-			}
+			return _.extend(_.create(this), data, { parentScope: this });
 		},
 
 		invoke: function invoke(fn, args, context) {
@@ -57,7 +79,7 @@ define(function (require, exports, module) {
 			// [0] default context
 			context = context || this;
 
-			fn = _.isFunction(fn) ? fn : this.evaluate(fn);
+			fn = _.isFunction(fn) ? fn : this[fn];
 
 			// [1] evaluate args
 			args = this.evaluate(args);
@@ -76,4 +98,10 @@ define(function (require, exports, module) {
 			return this;
 		},
 	});
+
+
+	// proto
+	scope
+		.proto(require('./__scope/evaluation'))
+		.proto(require('./__scope/iteration'));
 });

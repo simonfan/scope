@@ -107,28 +107,19 @@ define(function (require, exports, module) {
 	var _ = require(&#x27;lodash&#x27;),
 		subject = require(&#x27;subject&#x27;);
 
-
 	var scope = module.exports = subject({
 
-		create: function create(data) {
-			return _.extend(_.create(this), data);
+		initialize: function initializeScope(data) {
+
+			// unset initialize
+			this.initialize = void(0);
+
+			// assign data to this object
+			this.assign(data);
 		},
 
-		evaluate: function evaluate(data) {
-			if (_.isArray(data)) {
-				// data = [&#x27;prop1&#x27;, &#x27;prop2&#x27;, ...]
-				return _.map(data, function (propName) {
-					return this[propName];
-				}, this);
-			} else if (_.isObject(data)) {
-				// data = { prop1: &#x27;default-prop1-value&#x27;, prop2: &#x27;default-prop2-value&#x27;, ... }
-				return _.mapValues(data, function (defaultValue, propName) {
-					return this[propName] || defaultValue;
-				}, this);
-			} else if (_.isString(data)) {
-				// data = &#x27;prop1&#x27;
-				return this[data];
-			}
+		create: function create(data) {
+			return _.extend(_.create(this), data, { parentScope: this });
 		},
 
 		invoke: function invoke(fn, args, context) {
@@ -136,7 +127,7 @@ define(function (require, exports, module) {
 			// [0] default context
 			context = context || this;
 
-			fn = _.isFunction(fn) ? fn : this.evaluate(fn);
+			fn = _.isFunction(fn) ? fn : this[fn];
 
 			// [1] evaluate args
 			args = this.evaluate(args);
@@ -155,6 +146,12 @@ define(function (require, exports, module) {
 			return this;
 		},
 	});
+
+
+	// proto
+	scope
+		.proto(require(&#x27;./__scope/evaluation&#x27;))
+		.proto(require(&#x27;./__scope/iteration&#x27;));
 });
 
     </pre>

@@ -47,7 +47,9 @@
 				fruit: 'watermelon',
 				color: 'red',
 
-				data: { id: 'local' }
+				data: {
+					id: 'local'
+				}
 			});
 
 		});
@@ -83,6 +85,19 @@
 		});
 
 		it('evaluates objects into objects', function () {
+
+		});
+
+
+		it('iterates throughout the scope', function () {
+
+			var keys = [];
+
+			this.local.each(function (value, key) {
+				keys.push(key);
+			});
+
+			keys.length.should.eql(['place', 'fruit', 'color', 'data'])
 
 		});
 	});
