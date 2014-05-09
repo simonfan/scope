@@ -51,7 +51,7 @@
             "name": "evaluateToArguments",
             "params": [
                 {
-                    "name": "requiredArgs",
+                    "name": "scopeArgs",
                     "description": "",
                     "type": "Array|Object"
                 }
@@ -64,7 +64,7 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 53,
+            "line": 48,
             "description": "Invoke any function with the arguments and an optional context.",
             "itemtype": "method",
             "name": "invoke",
@@ -75,7 +75,7 @@
                     "type": "Function|String"
                 },
                 {
-                    "name": "requiredArgs",
+                    "name": "scopeArgs",
                     "description": "",
                     "type": "Array|Object"
                 },
@@ -90,14 +90,74 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 73,
-            "description": "Define a scope-aware function",
+            "line": 74,
+            "description": "Define/get a scope-aware function",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "fn",
+                    "description": "",
+                    "type": "Function"
+                },
+                {
+                    "name": "scopeArgs",
+                    "description": "",
+                    "type": "Array|Object"
+                }
+            ],
             "class": ""
         },
         {
             "file": "src/__scope/iteration.js",
-            "line": 11,
+            "line": 12,
             "description": "For in",
+            "params": [
+                {
+                    "name": "filter",
+                    "description": "",
+                    "type": "Array|RegExp",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "",
+                    "type": "Function"
+                },
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Whatever",
+                    "optional": true
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/__scope/iteration.js",
+            "line": 55,
+            "params": [
+                {
+                    "name": "filter",
+                    "description": "",
+                    "type": "Array|RegExp",
+                    "optional": true
+                },
+                {
+                    "name": "fn",
+                    "description": "",
+                    "type": "Function"
+                },
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Whatever",
+                    "optional": true
+                }
+            ],
             "class": ""
         }
     ],
@@ -107,12 +167,16 @@
             "line": " src/__scope/invocation.js:29"
         },
         {
-            "message": "Missing item type\nDefine a scope-aware function",
-            "line": " src/__scope/invocation.js:73"
+            "message": "Missing item type\nDefine/get a scope-aware function",
+            "line": " src/__scope/invocation.js:74"
         },
         {
             "message": "Missing item type\nFor in",
-            "line": " src/__scope/iteration.js:11"
+            "line": " src/__scope/iteration.js:12"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/__scope/iteration.js:55"
         }
     ]
 }

@@ -119,18 +119,13 @@ define(function (require, exports, module) {
 	 * passed to function.apply(whatever, args)
 	 *
 	 * @method evaluateToArguments
-	 * @param requiredArgs {Array|Object}
+	 * @param scopeArgs {Array|Object}
 	 * @returns args {Array}
 	 */
-	exports.evaluateToArguments = function evaluateToArguments(requiredArgs, defaults) {
+	exports.evaluateToArguments = function evaluateToArguments(scopeArgs) {
 
 		// [1] get values
-		var values = this.evaluate(requiredArgs);
-
-		// [2] set default values
-		if (_.isArray(requiredArgs) &amp;&amp; defaults) {
-			_.defaults(values, defaults);
-		}
+		var values = this.evaluate(scopeArgs);
 
 		// [3]
 		var args = _.isArray(values) ? values : [values];
@@ -143,41 +138,44 @@ define(function (require, exports, module) {
 	 *
 	 * @method invoke
 	 * @param fn {Function|String}
-	 * @param requiredArgs {Array|Object}
+	 * @param scopeArgs {Array|Object}
 	 * @param [context] {whatever}
 	 */
-	exports.invoke = function invoke(fn, requiredArgs, context, defaults) {
+	exports.invoke = function invoke(fn, scopeArgs /*, arg, arg, ... */) {
 
 		// [0] get fn
 		fn = _.isFunction(fn) ? fn : this[fn];
 
-		// [1] get args
-		var args = this.evaluateToArguments(requiredArgs, defaults);
+		// [1] get scopeArgs
+		scopeArgs = this.evaluateToArguments(scopeArgs);
 
 		// [2] invoke
-		return fn.apply(context, args);
+		return fn.apply(null, scopeArgs.concat(Array.prototype.slice.call(arguments, 2)));
 	};
+
+	exports.partial = function partial(fn, scopeArgs) {
+		return _.partial(this.invoke, fn, scopeArgs);
+	};
+
+
 
 	/**
 	 *
-	 * Define a scope-aware function
+	 * Define/get a scope-aware function
 	 *
+	 * @param name {String}
+	 * @param fn {Function}
+	 * @param scopeArgs {Array|Object}
 	 */
-	exports.fn = function defineFn(name, fn, requiredArgs, context, defaults) {
+	exports.fn = function scopeFn(name, fn, scopeArgs) {
 
-		// [1] get values
-		var args = this.evaluateToArguments(requiredArgs, defaults);
+		if (arguments.length === 1) {
+			return this[name];
+		} else {
+			this[name] = this.partial(fn, scopeArgs);
+		}
 
-		// [2] add the fn, as to make the partialization possible
-		args.unshift(fn);
-
-		// [3] partialize
-		fn = _.partial.apply(_, args);
-
-		// [4] bind if context availabe
-		this[name] = context ? _.bind(fn, context) : fn;
-
-		return this;
+		return fn;
 	};
 });
 

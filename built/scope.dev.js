@@ -8,26 +8,108 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 	var _ = require('lodash');
 
+
 	/**
 	 *
 	 * For in
+	 * @param [filter] {Array|RegExp}
+	 * @param fn {Function}
+	 * @param [context] {Whatever}
 	 */
-	exports.each = function each(fn, context) {
-		for (var prop in this) {
-			fn.call(context, this[prop], prop);
+	exports.each = function each() {
+
+		var filter, fn, context;
+
+		if (_.isFunction(arguments[0])) {
+			// unfiltered loop
+			fn      = arguments[0];
+			context = arguments[1];
+
+			for (var prop in this) {
+				fn.call(context, this[prop], prop);
+			}
+
+		} else {
+			// filtered loop
+			filter  = arguments[0];
+			fn      = arguments[1];
+			context = arguments[2];
+
+
+			if (_.isRegExp(filter)) {
+
+				for (var prop in this) {
+					if (filter.test(this[prop])) {
+						fn.call(context, this[prop], prop);
+					}
+				}
+			} else if (_.isArray(filter)) {
+				_.each(filter, function (prop) {
+					fn.call(context, this[prop], prop);
+				});
+			}
+		}
+
+		return this;
+	};
+	/**
+	 *
+	 * @param [filter] {Array|RegExp}
+	 * @param fn {Function}
+	 * @param [context] {Whatever}
+	 */
+	exports.eachOwn = function eachOwn() {
+		var filter, fn, context;
+
+		if (_.isFunction(arguments[0])) {
+			// unfiltered loop
+			fn      = arguments[0];
+			context = arguments[1];
+
+			_.each(this, fn, context);
+
+		} else {
+			// filtered loop
+			filter  = arguments[0];
+			fn      = arguments[1];
+			context = arguments[2];
+
+			if (_.isRegExp(filter)) {
+				_.each(this, function (value, prop) {
+
+					if (filter.test(prop)) {
+						fn.call(context, value, prop);
+					}
+
+				});
+
+			} else if (_.isArray(filter)) {
+				_.each(filter, function (prop) {
+
+					if (this.hasOwnProperty(prop)) {
+
+						fn.call(context, this[prop], prop);
+					}
+				}, this);
+			}
 		}
 
 		return this;
 	};
 
-	exports.eachOwn = function eachOwn(fn, context) {
-		return _.each(this, fn, context);
-	};
 
-	exports.eachInherited = function eachInherited() {
 
-		return this.parentScope.each.apply(this.parentScope, arguments);
-	};
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -86,11 +168,6 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 		return _.pick(this, criteria, context);
 	};
-
-	exports.pickInherited = function pickInherited() {
-		return this.parentScope.pick.apply(this.parentScope, arguments);
-	};
-
 
 });
 
@@ -199,18 +276,13 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	 * passed to function.apply(whatever, args)
 	 *
 	 * @method evaluateToArguments
-	 * @param requiredArgs {Array|Object}
+	 * @param scopeArgs {Array|Object}
 	 * @returns args {Array}
 	 */
-	exports.evaluateToArguments = function evaluateToArguments(requiredArgs, defaults) {
+	exports.evaluateToArguments = function evaluateToArguments(scopeArgs) {
 
 		// [1] get values
-		var values = this.evaluate(requiredArgs);
-
-		// [2] set default values
-		if (_.isArray(requiredArgs) && defaults) {
-			_.defaults(values, defaults);
-		}
+		var values = this.evaluate(scopeArgs);
 
 		// [3]
 		var args = _.isArray(values) ? values : [values];
@@ -223,41 +295,44 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	 *
 	 * @method invoke
 	 * @param fn {Function|String}
-	 * @param requiredArgs {Array|Object}
+	 * @param scopeArgs {Array|Object}
 	 * @param [context] {whatever}
 	 */
-	exports.invoke = function invoke(fn, requiredArgs, context, defaults) {
+	exports.invoke = function invoke(fn, scopeArgs /*, arg, arg, ... */) {
 
 		// [0] get fn
 		fn = _.isFunction(fn) ? fn : this[fn];
 
-		// [1] get args
-		var args = this.evaluateToArguments(requiredArgs, defaults);
+		// [1] get scopeArgs
+		scopeArgs = this.evaluateToArguments(scopeArgs);
 
 		// [2] invoke
-		return fn.apply(context, args);
+		return fn.apply(null, scopeArgs.concat(Array.prototype.slice.call(arguments, 2)));
 	};
+
+	exports.partial = function partial(fn, scopeArgs) {
+		return _.partial(this.invoke, fn, scopeArgs);
+	};
+
+
 
 	/**
 	 *
-	 * Define a scope-aware function
+	 * Define/get a scope-aware function
 	 *
+	 * @param name {String}
+	 * @param fn {Function}
+	 * @param scopeArgs {Array|Object}
 	 */
-	exports.fn = function defineFn(name, fn, requiredArgs, context, defaults) {
+	exports.fn = function scopeFn(name, fn, scopeArgs) {
 
-		// [1] get values
-		var args = this.evaluateToArguments(requiredArgs, defaults);
+		if (arguments.length === 1) {
+			return this[name];
+		} else {
+			this[name] = this.partial(fn, scopeArgs);
+		}
 
-		// [2] add the fn, as to make the partialization possible
-		args.unshift(fn);
-
-		// [3] partialize
-		fn = _.partial.apply(_, args);
-
-		// [4] bind if context availabe
-		this[name] = context ? _.bind(fn, context) : fn;
-
-		return this;
+		return fn;
 	};
 });
 
@@ -283,9 +358,8 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 		subject = require('subject');
 
 	// non enumerable descriptor
-	var nonEnum = {
-		enumerable: false
-	};
+	var nonEnum = { enumerable: false },
+		nonEnumWrite = { enumerable: false, writable: false };
 
 	var scope = module.exports = subject({
 
@@ -319,7 +393,7 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 
 	// proto
 	scope
-		.assignProto(require('./__scope/iteration'), nonEnum)
+		.assignProto(require('./__scope/iteration'), nonEnumWrite)
 		.assignProto(require('./__scope/evaluation'), nonEnum)
 		.assignProto(require('./__scope/invocation'), nonEnum);
 });
