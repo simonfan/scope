@@ -1,13 +1,3 @@
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
-
 /* jshint ignore:start */
 if (typeof define !== 'function') { var define = require('amdefine')(module) }
 /* jshint ignore:end */

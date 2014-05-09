@@ -4,22 +4,6 @@
         "version": "0.0.0"
     },
     "files": {
-        "src/__scope/helpers/parse-fn.js": {
-            "name": "src/__scope/helpers/parse-fn.js",
-            "modules": {
-                "scope": 1
-            },
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
-        "src/__scope/evaluation.js": {
-            "name": "src/__scope/evaluation.js",
-            "modules": {},
-            "classes": {},
-            "fors": {},
-            "namespaces": {}
-        },
         "src/__scope/invocation.js": {
             "name": "src/__scope/invocation.js",
             "modules": {},
@@ -36,7 +20,9 @@
         },
         "src/index.js": {
             "name": "src/index.js",
-            "modules": {},
+            "modules": {
+                "scope": 1
+            },
             "classes": {},
             "fors": {},
             "namespaces": {}
@@ -50,7 +36,7 @@
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "src/__scope/helpers/parse-fn.js",
+            "file": "src/index.js",
             "line": 5,
             "description": "AMD and CJS module."
         }
@@ -59,7 +45,7 @@
     "classitems": [
         {
             "file": "src/__scope/invocation.js",
-            "line": 39,
+            "line": 29,
             "description": "Evaluates necessarily to an array ready to be\npassed to function.apply(whatever, args)",
             "itemtype": "method",
             "name": "evaluateToArguments",
@@ -74,12 +60,11 @@
                 "description": "args",
                 "type": "Array"
             },
-            "class": "",
-            "module": "scope"
+            "class": ""
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 63,
+            "line": 53,
             "description": "Invoke any function with the arguments and an optional context.",
             "itemtype": "method",
             "name": "invoke",
@@ -101,36 +86,33 @@
                     "optional": true
                 }
             ],
-            "class": "",
-            "module": "scope"
+            "class": ""
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 83,
+            "line": 73,
             "description": "Define a scope-aware function",
-            "class": "",
-            "module": "scope"
+            "class": ""
         },
         {
             "file": "src/__scope/iteration.js",
-            "line": 21,
+            "line": 11,
             "description": "For in",
-            "class": "",
-            "module": "scope"
+            "class": ""
         }
     ],
     "warnings": [
         {
             "message": "replacing incorrect tag: returns with return",
-            "line": " src/__scope/invocation.js:39"
+            "line": " src/__scope/invocation.js:29"
         },
         {
             "message": "Missing item type\nDefine a scope-aware function",
-            "line": " src/__scope/invocation.js:83"
+            "line": " src/__scope/invocation.js:73"
         },
         {
             "message": "Missing item type\nFor in",
-            "line": " src/__scope/iteration.js:21"
+            "line": " src/__scope/iteration.js:11"
         }
     ]
 }

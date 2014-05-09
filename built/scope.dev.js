@@ -1,13 +1,3 @@
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
-
 /* jshint ignore:start */
 
 /* jshint ignore:end */
@@ -47,7 +37,7 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 		return function regExpCondition(value, prop) {
 			return criteria.test(prop);
-		}
+		};
 	}
 
 
@@ -103,16 +93,6 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 
 });
-
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
 
 /* jshint ignore:start */
 
@@ -185,16 +165,6 @@ define('__scope/evaluation',['require','exports','module','lodash'],function (re
 		return res;
 	};
 });
-
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
 
 /* jshint ignore:start */
 

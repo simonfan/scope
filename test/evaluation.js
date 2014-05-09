@@ -67,5 +67,22 @@
 					v3: 'g13',
 				});
 		});
+/*
+		it("evaluate('object:prop1, prop2, prop3')", function () {
+			this.local1.evaluate('object: id, v2, v4')
+				.should.eql({
+					id: 'local1',
+					v2: 'l12',
+					v4: 'l14'
+				});
+		});
+
+		it("evaluate('array:v0, v1, v2, v3')", function () {
+			this.local1.evaluate('array:  v4, id, v1')
+				.should.eql([
+					'l14', 'local1', 'l11'
+				]);
+		});
+*/
 	});
 });
