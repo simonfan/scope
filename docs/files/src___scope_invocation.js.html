@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__scope/iteration.js - scope</title>
+    <title>src/__scope/invocation.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,7 +82,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__scope/iteration.js</h1>
+                        <h1 class="file-heading">File: src/__scope/invocation.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -106,90 +106,89 @@ define(function (require, exports, module) {
 
 	var _ = require(&#x27;lodash&#x27;);
 
+	/*
+
+		var arch = scope({
+
+		});
+
+		arch.fn(&#x27;alert&#x27;, function (contextualMessage, msg) {
+			return &#x27;DANGER! &#x27; + contextualMessage + &#x27; &#x27; + msg;
+		}, [&#x27;message&#x27;]);
+
+
+		arch.message = &#x27;some message&#x27;;
+
+		arch.alert();					// &#x27;DANGER! some message&#x27;
+		arch.alert(&#x27;More messages&#x27;)		// &#x27;DANGER! some message More messages&#x27;
+
+	*/
+
+	/**
+	 * Evaluates necessarily to an array ready to be
+	 * passed to function.apply(whatever, args)
+	 *
+	 * @method evaluateToArguments
+	 * @param requiredArgs {Array|Object}
+	 * @returns args {Array}
+	 */
+	exports.evaluateToArguments = function evaluateToArguments(requiredArgs, defaults) {
+
+		// [1] get values
+		var values = this.evaluate(requiredArgs);
+
+		// [2] set default values
+		if (_.isArray(requiredArgs) &amp;&amp; defaults) {
+			_.defaults(values, defaults);
+		}
+
+		// [3]
+		var args = _.isArray(values) ? values : [values];
+
+		return args;
+	};
+
+	/**
+	 * Invoke any function with the arguments and an optional context.
+	 *
+	 * @method invoke
+	 * @param fn {Function|String}
+	 * @param requiredArgs {Array|Object}
+	 * @param [context] {whatever}
+	 */
+	exports.invoke = function invoke(fn, requiredArgs, context, defaults) {
+
+		// [0] get fn
+		fn = _.isFunction(fn) ? fn : this[fn];
+
+		// [1] get args
+		var args = this.evaluateToArguments(requiredArgs, defaults);
+
+		// [2] invoke
+		return fn.apply(context, args);
+	};
+
 	/**
 	 *
-	 * For in
+	 * Define a scope-aware function
+	 *
 	 */
-	exports.each = function each(fn, context) {
-		for (var prop in this) {
-			fn.call(context, this[prop], prop);
-		}
+	exports.fn = function defineFn(name, fn, requiredArgs, context, defaults) {
+
+		// [1] get values
+		var args = this.evaluateToArguments(requiredArgs, defaults);
+
+		// [2] add the fn, as to make the partialization possible
+		args.unshift(fn);
+
+		// [3] partialize
+		fn = _.partial.apply(_, args);
+
+		// [4] bind if context availabe
+		this[name] = context ? _.bind(fn, context) : fn;
 
 		return this;
 	};
-
-	exports.eachOwn = function eachOwn(fn, context) {
-		return _.each(this, fn, context);
-	};
-
-	exports.eachInherited = function eachInherited() {
-
-		return this.parentScope.each.apply(this.parentScope, arguments);
-	};
-
-
-
-
-	/// pick
-	function buildRegExpConditon(criteria) {
-
-		return function regExpCondition(value, prop) {
-			return criteria.test(prop);
-		}
-	}
-
-
-	exports.pick = function pick(criteria, context) {
-
-		context = context || this;
-
-		var res = {};
-
-
-		if (_.isArray(criteria)) {
-
-			// array picker
-			_.each(criteria, function (prop) {
-				res[prop] = this[prop];
-			}, this);
-
-		} else {
-			//
-
-			// convert NON-FUNCTION criteria into function.
-			if (_.isRegExp(criteria)) {
-				// regexp
-				criteria = buildRegExpConditon(criteria);
-
-			}
-
-			// loop
-			this.each(function (value, prop) {
-				if (criteria.apply(context, arguments)) {
-					res[prop] = value;
-				}
-			});
-
-		}
-
-		return res;
-	};
-
-	exports.pickOwn = function pickOwn(criteria, context) {
-
-		if (_.isRegExp(criteria)) {
-			criteria = buildRegExpConditon(criteria);
-
-		}
-
-		return _.pick(this, criteria, context);
-	};
-
-	exports.pickInherited = function pickInherited() {
-		return this.parentScope.pick.apply(this.parentScope, arguments);
-	};
-
-
 });
 
     </pre>

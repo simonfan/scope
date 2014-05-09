@@ -34,35 +34,72 @@ define(function (require, exports, module) {
 		return _.each(this, fn, context);
 	};
 
+	exports.eachInherited = function eachInherited() {
+
+		return this.parentScope.each.apply(this.parentScope, arguments);
+	};
+
 
 
 
 	/// pick
+	function buildRegExpConditon(criteria) {
 
-	exports.pick = function pick(fn, context) {
+		return function regExpCondition(value, prop) {
+			return criteria.test(prop);
+		}
+	}
 
 
-		if (_.isArray(fn)) {
+	exports.pick = function pick(criteria, context) {
+
+		context = context || this;
+
+		var res = {};
+
+
+		if (_.isArray(criteria)) {
+
 			// array picker
-			return this.evaluate(fn);
+			_.each(criteria, function (prop) {
+				res[prop] = this[prop];
+			}, this);
+
 		} else {
-			// filter
+			//
 
-			var res = {};
+			// convert NON-FUNCTION criteria into function.
+			if (_.isRegExp(criteria)) {
+				// regexp
+				criteria = buildRegExpConditon(criteria);
 
-			this.each(function (value, key) {
+			}
 
-				if (fn.call(context, value, key)) {
-					res[key] = value;
+			// loop
+			this.each(function (value, prop) {
+				if (criteria.apply(context, arguments)) {
+					res[prop] = value;
 				}
-
 			});
 
-			return res;
 		}
+
+		return res;
 	};
 
-	exports.pickOwn = function pickOwn(fn, context) {
-		return _.pick(this, fn, context);
-	}
+	exports.pickOwn = function pickOwn(criteria, context) {
+
+		if (_.isRegExp(criteria)) {
+			criteria = buildRegExpConditon(criteria);
+
+		}
+
+		return _.pick(this, criteria, context);
+	};
+
+	exports.pickInherited = function pickInherited() {
+		return this.parentScope.pick.apply(this.parentScope, arguments);
+	};
+
+
 });

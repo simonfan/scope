@@ -4,11 +4,25 @@
         "version": "0.0.0"
     },
     "files": {
-        "src/__scope/evaluation.js": {
-            "name": "src/__scope/evaluation.js",
+        "src/__scope/helpers/parse-fn.js": {
+            "name": "src/__scope/helpers/parse-fn.js",
             "modules": {
                 "scope": 1
             },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/evaluation.js": {
+            "name": "src/__scope/evaluation.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/invocation.js": {
+            "name": "src/__scope/invocation.js",
+            "modules": {},
             "classes": {},
             "fors": {},
             "namespaces": {}
@@ -36,13 +50,67 @@
             "fors": {},
             "namespaces": {},
             "tag": "module",
-            "file": "src/__scope/evaluation.js",
+            "file": "src/__scope/helpers/parse-fn.js",
             "line": 5,
             "description": "AMD and CJS module."
         }
     },
     "classes": {},
     "classitems": [
+        {
+            "file": "src/__scope/invocation.js",
+            "line": 39,
+            "description": "Evaluates necessarily to an array ready to be\npassed to function.apply(whatever, args)",
+            "itemtype": "method",
+            "name": "evaluateToArguments",
+            "params": [
+                {
+                    "name": "requiredArgs",
+                    "description": "",
+                    "type": "Array|Object"
+                }
+            ],
+            "return": {
+                "description": "args",
+                "type": "Array"
+            },
+            "class": "",
+            "module": "scope"
+        },
+        {
+            "file": "src/__scope/invocation.js",
+            "line": 63,
+            "description": "Invoke any function with the arguments and an optional context.",
+            "itemtype": "method",
+            "name": "invoke",
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "",
+                    "type": "Function|String"
+                },
+                {
+                    "name": "requiredArgs",
+                    "description": "",
+                    "type": "Array|Object"
+                },
+                {
+                    "name": "context",
+                    "description": "",
+                    "type": "Whatever",
+                    "optional": true
+                }
+            ],
+            "class": "",
+            "module": "scope"
+        },
+        {
+            "file": "src/__scope/invocation.js",
+            "line": 83,
+            "description": "Define a scope-aware function",
+            "class": "",
+            "module": "scope"
+        },
         {
             "file": "src/__scope/iteration.js",
             "line": 21,
@@ -52,6 +120,14 @@
         }
     ],
     "warnings": [
+        {
+            "message": "replacing incorrect tag: returns with return",
+            "line": " src/__scope/invocation.js:39"
+        },
+        {
+            "message": "Missing item type\nDefine a scope-aware function",
+            "line": " src/__scope/invocation.js:83"
+        },
         {
             "message": "Missing item type\nFor in",
             "line": " src/__scope/iteration.js:21"

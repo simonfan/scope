@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__scope/iteration.js - scope</title>
+    <title>src/__scope/helpers/parse-fn.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,7 +82,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__scope/iteration.js</h1>
+                        <h1 class="file-heading">File: src/__scope/helpers/parse-fn.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -106,90 +106,29 @@ define(function (require, exports, module) {
 
 	var _ = require(&#x27;lodash&#x27;);
 
-	/**
-	 *
-	 * For in
-	 */
-	exports.each = function each(fn, context) {
-		for (var prop in this) {
-			fn.call(context, this[prop], prop);
-		}
+		// captures the function name
+	var nameRe = /^\s*function\s*([A-Za-z$_][A-Za-z0-9$_]*)?\s*\(/,
+		// captures the argument names string
+		argsRe = /^.*?\(\s*(.*?)\s*\)/;
 
-		return this;
+
+
+	module.exports = function parseFn(fn) {
+
+		var source = _.isString(fn) ? fn : fn.toString();
+
+		// name
+		var matchName = source.match(nameRe);
+
+		// args
+		var matchArgs = source.match(argsRe),
+			argsString = matchArgs ? matchArgs[1] : void(0);
+
+		return {
+			name: matchName ? matchName[1] : void(0),
+			args: argsString ? argsString.split(/,\s*/)
+		};
 	};
-
-	exports.eachOwn = function eachOwn(fn, context) {
-		return _.each(this, fn, context);
-	};
-
-	exports.eachInherited = function eachInherited() {
-
-		return this.parentScope.each.apply(this.parentScope, arguments);
-	};
-
-
-
-
-	/// pick
-	function buildRegExpConditon(criteria) {
-
-		return function regExpCondition(value, prop) {
-			return criteria.test(prop);
-		}
-	}
-
-
-	exports.pick = function pick(criteria, context) {
-
-		context = context || this;
-
-		var res = {};
-
-
-		if (_.isArray(criteria)) {
-
-			// array picker
-			_.each(criteria, function (prop) {
-				res[prop] = this[prop];
-			}, this);
-
-		} else {
-			//
-
-			// convert NON-FUNCTION criteria into function.
-			if (_.isRegExp(criteria)) {
-				// regexp
-				criteria = buildRegExpConditon(criteria);
-
-			}
-
-			// loop
-			this.each(function (value, prop) {
-				if (criteria.apply(context, arguments)) {
-					res[prop] = value;
-				}
-			});
-
-		}
-
-		return res;
-	};
-
-	exports.pickOwn = function pickOwn(criteria, context) {
-
-		if (_.isRegExp(criteria)) {
-			criteria = buildRegExpConditon(criteria);
-
-		}
-
-		return _.pick(this, criteria, context);
-	};
-
-	exports.pickInherited = function pickInherited() {
-		return this.parentScope.pick.apply(this.parentScope, arguments);
-	};
-
-
 });
 
     </pre>

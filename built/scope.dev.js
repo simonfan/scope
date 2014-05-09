@@ -12,95 +12,6 @@
 
 /* jshint ignore:end */
 
-define('__scope/evaluation',['require','exports','module','lodash'],function (require, exports, module) {
-	
-
-
-	var _ = require('lodash');
-
-
-	var defaultOptions = {
-
-	};
-
-	function evaluateArray(scope, properties, opt) {
-		// data = ['prop1', 'prop2', ...]
-
-		// get the values
-		var res = _.map(properties, function (property) {
-			return scope[property];
-		});
-
-		return (opt.to && opt.to === 'object') ?
-			// response must be cast to object
-			_.zipObject(properties, res) :
-			// response as is.
-			res;
-	}
-
-	function evaluateObject(scope, obj, opt) {
-		// obj = { prop1: 'default-prop1-value', prop2: 'default-prop2-value', ... }
-
-		// get the values.
-		var res = _.mapValues(obj, function (defaultValue, property) {
-			var value = scope[property];
-
-			return _.isUndefined(value) ? defaultValue : value;
-		});
-
-		if (opt.to && opt.to === 'array') {
-			// response must be cast to array
-
-			return !opt.order ?
-				// return the array in natural order (whatever that means)
-				_.values(object) :
-				// return the array in the order required.
-				_.map(opt.order, function (key) {
-					return res[key];
-				});
-
-		} else {
-			// response is in the object normal format
-			return res;
-		}
-	}
-
-	function evaluateString(scope, string, options) {
-		return scope[string];
-	}
-
-	exports.evaluate = function evaluate(data, options) {
-		options = options || {};
-
-		if (_.isArray(data)) {
-
-			return evaluateArray(this, data, options);
-
-		} else if (_.isObject(data)) {
-
-			return evaluateObject(this, data, options);
-
-		} else if (_.isString(data)) {
-			// data = 'prop1'
-			return evaluateString(this, data, options);
-		}
-	};
-});
-
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
-
-/* jshint ignore:start */
-
-/* jshint ignore:end */
-
 define('__scope/iteration',['require','exports','module','lodash'],function (require, exports, module) {
 	
 
@@ -123,37 +34,74 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 		return _.each(this, fn, context);
 	};
 
+	exports.eachInherited = function eachInherited() {
+
+		return this.parentScope.each.apply(this.parentScope, arguments);
+	};
+
 
 
 
 	/// pick
+	function buildRegExpConditon(criteria) {
 
-	exports.pick = function pick(fn, context) {
+		return function regExpCondition(value, prop) {
+			return criteria.test(prop);
+		}
+	}
 
 
-		if (_.isArray(fn)) {
+	exports.pick = function pick(criteria, context) {
+
+		context = context || this;
+
+		var res = {};
+
+
+		if (_.isArray(criteria)) {
+
 			// array picker
-			return this.evaluate(fn);
+			_.each(criteria, function (prop) {
+				res[prop] = this[prop];
+			}, this);
+
 		} else {
-			// filter
+			//
 
-			var res = {};
+			// convert NON-FUNCTION criteria into function.
+			if (_.isRegExp(criteria)) {
+				// regexp
+				criteria = buildRegExpConditon(criteria);
 
-			this.each(function (value, key) {
+			}
 
-				if (fn.call(context, value, key)) {
-					res[key] = value;
+			// loop
+			this.each(function (value, prop) {
+				if (criteria.apply(context, arguments)) {
+					res[prop] = value;
 				}
-
 			});
 
-			return res;
 		}
+
+		return res;
 	};
 
-	exports.pickOwn = function pickOwn(fn, context) {
-		return _.pick(this, fn, context);
-	}
+	exports.pickOwn = function pickOwn(criteria, context) {
+
+		if (_.isRegExp(criteria)) {
+			criteria = buildRegExpConditon(criteria);
+
+		}
+
+		return _.pick(this, criteria, context);
+	};
+
+	exports.pickInherited = function pickInherited() {
+		return this.parentScope.pick.apply(this.parentScope, arguments);
+	};
+
+
 });
 
 //     scope
@@ -170,40 +118,220 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 /* jshint ignore:end */
 
-define('scope',['require','exports','module','lodash','subject','./__scope/evaluation','./__scope/iteration'],function (require, exports, module) {
+define('__scope/evaluation',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+
+	var _ = require('lodash');
+	/// evaluate
+
+
+	exports.evaluate = function evaluate(criteria, options) {
+
+		var res;
+
+		if (_.isArray(criteria)) {
+
+			if (options && options.format === 'object') {
+				// return object
+				res = this.pick(criteria);
+
+			} else {
+				// return array
+				res = _.map(criteria, function (prop) {
+					return this[prop];
+				}, this);
+			}
+
+		} else if (_.isRegExp(criteria)) {
+			// return object
+			res = this.pick(criteria);
+		} else {
+			// return object
+			res = this.pick(_.keys(criteria));
+			_.defaults(res, criteria);
+		}
+
+		return res;
+	};
+
+	exports.evaluateOwn = function evaluateOwn(criteria, options) {
+
+		var res;
+
+		if (_.isArray(criteria)) {
+
+			if (options && options.format === 'object') {
+				// return object
+				res = this.pickOwn(criteria);
+			} else {
+				// return array
+				res = _.map(criteria, function (prop) {
+					if (this.hasOwnProperty(prop)) {
+						return this[prop];
+					}
+				});
+			}
+
+		} else if (_.isRegExp(criteria)) {
+			// return object
+			res = this.pickOwn(criteria);
+		} else {
+			// return object
+			res = this.pickOwn(_.keys(criteria));
+			_.defaults(res, criteria);
+		}
+
+		return res;
+	};
+});
+
+//     scope
+//     (c) simonfan
+//     scope is licensed under the MIT terms.
+
+/**
+ * AMD and CJS module.
+ *
+ * @module scope
+ */
+
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
+define('__scope/invocation',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+
+	var _ = require('lodash');
+
+	/*
+
+		var arch = scope({
+
+		});
+
+		arch.fn('alert', function (contextualMessage, msg) {
+			return 'DANGER! ' + contextualMessage + ' ' + msg;
+		}, ['message']);
+
+
+		arch.message = 'some message';
+
+		arch.alert();					// 'DANGER! some message'
+		arch.alert('More messages')		// 'DANGER! some message More messages'
+
+	*/
+
+	/**
+	 * Evaluates necessarily to an array ready to be
+	 * passed to function.apply(whatever, args)
+	 *
+	 * @method evaluateToArguments
+	 * @param requiredArgs {Array|Object}
+	 * @returns args {Array}
+	 */
+	exports.evaluateToArguments = function evaluateToArguments(requiredArgs, defaults) {
+
+		// [1] get values
+		var values = this.evaluate(requiredArgs);
+
+		// [2] set default values
+		if (_.isArray(requiredArgs) && defaults) {
+			_.defaults(values, defaults);
+		}
+
+		// [3]
+		var args = _.isArray(values) ? values : [values];
+
+		return args;
+	};
+
+	/**
+	 * Invoke any function with the arguments and an optional context.
+	 *
+	 * @method invoke
+	 * @param fn {Function|String}
+	 * @param requiredArgs {Array|Object}
+	 * @param [context] {whatever}
+	 */
+	exports.invoke = function invoke(fn, requiredArgs, context, defaults) {
+
+		// [0] get fn
+		fn = _.isFunction(fn) ? fn : this[fn];
+
+		// [1] get args
+		var args = this.evaluateToArguments(requiredArgs, defaults);
+
+		// [2] invoke
+		return fn.apply(context, args);
+	};
+
+	/**
+	 *
+	 * Define a scope-aware function
+	 *
+	 */
+	exports.fn = function defineFn(name, fn, requiredArgs, context, defaults) {
+
+		// [1] get values
+		var args = this.evaluateToArguments(requiredArgs, defaults);
+
+		// [2] add the fn, as to make the partialization possible
+		args.unshift(fn);
+
+		// [3] partialize
+		fn = _.partial.apply(_, args);
+
+		// [4] bind if context availabe
+		this[name] = context ? _.bind(fn, context) : fn;
+
+		return this;
+	};
+});
+
+//     scope
+//     (c) simonfan
+//     scope is licensed under the MIT terms.
+
+/**
+ * AMD and CJS module.
+ *
+ * @module scope
+ */
+
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
+define('scope',['require','exports','module','lodash','subject','./__scope/iteration','./__scope/evaluation','./__scope/invocation'],function (require, exports, module) {
 	
 
 
 	var _ = require('lodash'),
 		subject = require('subject');
 
+	// non enumerable descriptor
+	var nonEnum = {
+		enumerable: false
+	};
+
 	var scope = module.exports = subject({
 
-		initialize: function initializeScope(data) {
-
-			// unset initialize
-			this.initialize = void(0);
-
-			// assign data to this object
-			this.assign(data);
+		initialize: function initializeScope(data, descriptor) {
+			subject.assign(this, data, descriptor);
 		},
 
-		create: function create(data) {
-			return _.extend(_.create(this), data, { parentScope: this });
-		},
+		create: function create(data, descriptor) {
 
-		invoke: function invoke(fn, args, context) {
+			// create the subscope
+			var subscope = subject.assign(_.create(this), data, descriptor);
 
-			// [0] default context
-			context = context || this;
+			// set reference to the parentScope (make it non enumerable)
+			subject.assign(subscope, { parentScope: this }, nonEnum);
 
-			fn = _.isFunction(fn) ? fn : this[fn];
-
-			// [1] evaluate args
-			args = this.evaluate(args);
-
-			// [2] invoke
-			return _.isArray(args) ? fn.apply(context, args) : fn.call(context, args);
+			return subscope;
 		},
 
 		assign: function assign(key, value) {
@@ -215,12 +343,14 @@ define('scope',['require','exports','module','lodash','subject','./__scope/evalu
 
 			return this;
 		},
-	});
+
+	}, nonEnum);
 
 
 	// proto
 	scope
-		.proto(require('./__scope/evaluation'))
-		.proto(require('./__scope/iteration'));
+		.assignProto(require('./__scope/iteration'), nonEnum)
+		.assignProto(require('./__scope/evaluation'), nonEnum)
+		.assignProto(require('./__scope/invocation'), nonEnum);
 });
 

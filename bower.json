@@ -5,7 +5,7 @@
   "description": "Some module...",
   "dependencies": {
     "lodash": "~2.4.1",
-    "subject": "~0.4.1"
+    "subject": "0.5.5"
   },
   "devDependencies": {
     "requirejs": "*",
@@ -13,5 +13,8 @@
     "underscore": "*",
     "jquery": "*",
     "qunit": "*"
+  },
+  "resolutions": {
+    "subject": "0.5.5"
   }
 }

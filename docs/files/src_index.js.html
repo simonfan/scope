@@ -107,33 +107,26 @@ define(function (require, exports, module) {
 	var _ = require(&#x27;lodash&#x27;),
 		subject = require(&#x27;subject&#x27;);
 
+	// non enumerable descriptor
+	var nonEnum = {
+		enumerable: false
+	};
+
 	var scope = module.exports = subject({
 
-		initialize: function initializeScope(data) {
-
-			// unset initialize
-			this.initialize = void(0);
-
-			// assign data to this object
-			this.assign(data);
+		initialize: function initializeScope(data, descriptor) {
+			subject.assign(this, data, descriptor);
 		},
 
-		create: function create(data) {
-			return _.extend(_.create(this), data, { parentScope: this });
-		},
+		create: function create(data, descriptor) {
 
-		invoke: function invoke(fn, args, context) {
+			// create the subscope
+			var subscope = subject.assign(_.create(this), data, descriptor);
 
-			// [0] default context
-			context = context || this;
+			// set reference to the parentScope (make it non enumerable)
+			subject.assign(subscope, { parentScope: this }, nonEnum);
 
-			fn = _.isFunction(fn) ? fn : this[fn];
-
-			// [1] evaluate args
-			args = this.evaluate(args);
-
-			// [2] invoke
-			return _.isArray(args) ? fn.apply(context, args) : fn.call(context, args);
+			return subscope;
 		},
 
 		assign: function assign(key, value) {
@@ -145,13 +138,15 @@ define(function (require, exports, module) {
 
 			return this;
 		},
-	});
+
+	}, nonEnum);
 
 
 	// proto
 	scope
-		.proto(require(&#x27;./__scope/evaluation&#x27;))
-		.proto(require(&#x27;./__scope/iteration&#x27;));
+		.assignProto(require(&#x27;./__scope/iteration&#x27;), nonEnum)
+		.assignProto(require(&#x27;./__scope/evaluation&#x27;), nonEnum)
+		.assignProto(require(&#x27;./__scope/invocation&#x27;), nonEnum);
 });
 
     </pre>

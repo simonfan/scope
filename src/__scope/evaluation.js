@@ -17,72 +17,65 @@ define(function (require, exports, module) {
 
 
 	var _ = require('lodash');
+	/// evaluate
 
 
-	var defaultOptions = {
+	exports.evaluate = function evaluate(criteria, options) {
 
+		var res;
+
+		if (_.isArray(criteria)) {
+
+			if (options && options.format === 'object') {
+				// return object
+				res = this.pick(criteria);
+
+			} else {
+				// return array
+				res = _.map(criteria, function (prop) {
+					return this[prop];
+				}, this);
+			}
+
+		} else if (_.isRegExp(criteria)) {
+			// return object
+			res = this.pick(criteria);
+		} else {
+			// return object
+			res = this.pick(_.keys(criteria));
+			_.defaults(res, criteria);
+		}
+
+		return res;
 	};
 
-	function evaluateArray(scope, properties, opt) {
-		// data = ['prop1', 'prop2', ...]
+	exports.evaluateOwn = function evaluateOwn(criteria, options) {
 
-		// get the values
-		var res = _.map(properties, function (property) {
-			return scope[property];
-		});
+		var res;
 
-		return (opt.to && opt.to === 'object') ?
-			// response must be cast to object
-			_.zipObject(properties, res) :
-			// response as is.
-			res;
-	}
+		if (_.isArray(criteria)) {
 
-	function evaluateObject(scope, obj, opt) {
-		// obj = { prop1: 'default-prop1-value', prop2: 'default-prop2-value', ... }
-
-		// get the values.
-		var res = _.mapValues(obj, function (defaultValue, property) {
-			var value = scope[property];
-
-			return _.isUndefined(value) ? defaultValue : value;
-		});
-
-		if (opt.to && opt.to === 'array') {
-			// response must be cast to array
-
-			return !opt.order ?
-				// return the array in natural order (whatever that means)
-				_.values(object) :
-				// return the array in the order required.
-				_.map(opt.order, function (key) {
-					return res[key];
+			if (options && options.format === 'object') {
+				// return object
+				res = this.pickOwn(criteria);
+			} else {
+				// return array
+				res = _.map(criteria, function (prop) {
+					if (this.hasOwnProperty(prop)) {
+						return this[prop];
+					}
 				});
+			}
 
+		} else if (_.isRegExp(criteria)) {
+			// return object
+			res = this.pickOwn(criteria);
 		} else {
-			// response is in the object normal format
-			return res;
+			// return object
+			res = this.pickOwn(_.keys(criteria));
+			_.defaults(res, criteria);
 		}
-	}
 
-	function evaluateString(scope, string, options) {
-		return scope[string];
-	}
-
-	exports.evaluate = function evaluate(data, options) {
-		options = options || {};
-
-		if (_.isArray(data)) {
-
-			return evaluateArray(this, data, options);
-
-		} else if (_.isObject(data)) {
-
-			return evaluateObject(this, data, options);
-
-		} else if (_.isString(data)) {
-			// data = 'prop1'
-			return evaluateString(this, data, options);
-		}
+		return res;
 	};
 });

@@ -6,7 +6,7 @@
 		// browser
 		'scope',
 		// dependencies for the test
-		deps = [mod, 'should'];
+		deps = [mod, 'should', 'lodash'];
 
 	if (typeof define !== 'function') {
 		// node
@@ -16,7 +16,7 @@
 		define(deps, factory);
 	}
 
-})('test', function(scope, should) {
+})('test', function(scope, should, _) {
 	'use strict';
 
 	describe('scope basics', function () {
@@ -84,20 +84,45 @@
 				]);
 		});
 
-		it('evaluates objects into objects', function () {
+		it('iterates throughout the scope', function () {
+
+			var scopeKeys = [];
+
+			this.local.each(function (value, key) {
+				scopeKeys.push(key);
+			});
+
+			//
+			var allScopeProperties = ['place', 'fruit', 'color', 'data'];
+
+			// scopeKeys should contain all the expected properties.
+			_.all(allScopeProperties, function (prop) {
+				return _.contains(scopeKeys, prop);
+			}).should.be.true;
+
+			scopeKeys.length.should.eql(allScopeProperties.length);
 
 		});
 
 
-		it('iterates throughout the scope', function () {
+		it('iterates only own properties', function () {
 
-			var keys = [];
+			var localKeys = [];
 
-			this.local.each(function (value, key) {
-				keys.push(key);
+			this.local.eachOwn(function (value, key) {
+				localKeys.push(key);
 			});
 
-			keys.length.should.eql(['place', 'fruit', 'color', 'data'])
+			//
+			var allScopeProperties = [/* 'place', */ 'fruit', 'color', 'data'];
+
+			// localKeys should contain all the expected properties.
+			_.all(allScopeProperties, function (prop) {
+				return _.contains(localKeys, prop);
+			}).should.be.true;
+
+			// lenths should be equal
+			localKeys.length.should.eql(allScopeProperties.length);
 
 		});
 	});

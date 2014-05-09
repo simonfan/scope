@@ -19,73 +19,26 @@ define(function (require, exports, module) {
 	var _ = require('lodash'),
 		subject = require('subject');
 
-	var scope = module.exports = subject();
-
-
-
-
-
-	var defaultDescriptor = {
-	//	value:        void(0),
-		configurable: false,
-		writable:     true,
-		enumerable:   false,
+	// non enumerable descriptor
+	var nonEnum = {
+		enumerable: false
 	};
 
-	function extendNonEnum(obj, extensions, descriptor) {
+	var scope = module.exports = subject({
 
-		descriptor = descriptor || {};
-		_.defaults(descriptor, defaultDescriptor);
-
-		_.each(extensions, function (value, key) {
-
-			Object.defineProperty(obj, key, _.extend({
-				value: value,
-			}, descriptor);
-
-		});
-
-		return obj;
-	}
-
-
-
-	// set the extend method of scope to be stealth setter
-	scope.extend = function stealthExtend()
-
-
-	function initializeScope(data) {
-
-		// assign data to this object
-		this.assign(data);
-	}
-
-	Object.defineProperty(scope.prototype, 'initialize', {
-		value : initializeScope,
-		writable : true,
-		enumerable : false,
-		configurable : false
-	});
-
-
-	scope.proto({
-
-		create: function create(data) {
-			return _.extend(_.create(this), data, { parentScope: this });
+		initialize: function initializeScope(data, descriptor) {
+			subject.assign(this, data, descriptor);
 		},
 
-		invoke: function invoke(fn, args, context) {
+		create: function create(data, descriptor) {
 
-			// [0] default context
-			context = context || this;
+			// create the subscope
+			var subscope = subject.assign(_.create(this), data, descriptor);
 
-			fn = _.isFunction(fn) ? fn : this[fn];
+			// set reference to the parentScope (make it non enumerable)
+			subject.assign(subscope, { parentScope: this }, nonEnum);
 
-			// [1] evaluate args
-			args = this.evaluate(args);
-
-			// [2] invoke
-			return _.isArray(args) ? fn.apply(context, args) : fn.call(context, args);
+			return subscope;
 		},
 
 		assign: function assign(key, value) {
@@ -97,11 +50,13 @@ define(function (require, exports, module) {
 
 			return this;
 		},
-	});
+
+	}, nonEnum);
 
 
 	// proto
 	scope
-		.proto(require('./__scope/evaluation'))
-		.proto(require('./__scope/iteration'));
+		.assignProto(require('./__scope/iteration'), nonEnum)
+		.assignProto(require('./__scope/evaluation'), nonEnum)
+		.assignProto(require('./__scope/invocation'), nonEnum);
 });
