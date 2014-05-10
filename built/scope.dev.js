@@ -97,78 +97,6 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 		return this;
 	};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/// pick
-	function buildRegExpConditon(criteria) {
-
-		return function regExpCondition(value, prop) {
-			return criteria.test(prop);
-		};
-	}
-
-
-	exports.pick = function pick(criteria, context) {
-
-		context = context || this;
-
-		var res = {};
-
-
-		if (_.isArray(criteria)) {
-
-			// array picker
-			_.each(criteria, function (prop) {
-				res[prop] = this[prop];
-			}, this);
-
-		} else {
-			//
-
-			// convert NON-FUNCTION criteria into function.
-			if (_.isRegExp(criteria)) {
-				// regexp
-				criteria = buildRegExpConditon(criteria);
-
-			}
-
-			// loop
-			this.each(function (value, prop) {
-				if (criteria.apply(context, arguments)) {
-					res[prop] = value;
-				}
-			});
-
-		}
-
-		return res;
-	};
-
-	exports.pickOwn = function pickOwn(criteria, context) {
-
-		if (_.isRegExp(criteria)) {
-			criteria = buildRegExpConditon(criteria);
-
-		}
-
-		return _.pick(this, criteria, context);
-	};
-
 });
 
 /* jshint ignore:start */
@@ -180,67 +108,171 @@ define('__scope/evaluation',['require','exports','module','lodash'],function (re
 
 
 	var _ = require('lodash');
-	/// evaluate
 
 
+	function evaluateArrayToObject(scope, criteria, options) {
+		var res = {};
+
+		if (options.own) {
+
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion) && scope.hasOwnProperty(criterion)) {
+					// criterion = 'prop';
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluateOwn(criterion, options);
+				}
+			});
+
+		} else {
+
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion)) {
+					// criterion = 'prop';
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluate(criterion, options);
+				}
+			});
+		}
+
+		return res;
+	}
+
+	function evaluateArrayToArray(scope, criteria, options) {
+
+		if (options.own) {
+
+			return _.map(criteria, function (criterion) {
+
+				return (_.isString(criterion) && scope.hasOwnProperty(criterion)) ?
+					// criterion = 'prop';
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluateOwn(criterion, options);
+			});
+
+		} else {
+
+			return _.map(criteria, function (criterion) {
+				return _.isString(criterion) ?
+					// criterion = 'prop';
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluate(criterion, options);
+			});
+
+		}
+	}
+
+
+
+
+
+	/// regexp
+	function evaluateRegExp(scope, criteria, options) {
+		// response always in object format
+		var res = {};
+
+		if (options.own) {
+
+			// loop own
+			scope.eachOwn(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
+
+		} else {
+
+			// loop everything
+			scope.each(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
+
+		}
+
+		return res;
+	}
+
+
+	// object
+	function evaluateObject(scope, criteria, options) {
+		var res = {};
+
+		if (options.own) {
+			_.each(criteria, function (value, prop) {
+
+				if (scope.hasOwnProperty(prop)) {
+					res[prop] = scope[prop];
+				}
+
+			});
+
+		} else {
+
+			_.each(criteria, function (value, prop) {
+				res[prop] = scope[prop];
+			});
+
+		}
+
+		// set defaults
+		_.defaults(res, criteria);
+
+		return res;
+	}
+
+	/**
+
+
+	scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])
+
+
+	*/
+
+	/**
+	 *
+	 * @param options {Object}
+	 *     @param own {Boolean}
+	 *     @param format {String}
+	 */
 	exports.evaluate = function evaluate(criteria, options) {
 
-		var res;
+		options = options || {};
 
 		if (_.isArray(criteria)) {
 
 			if (options && options.format === 'object') {
-				// return object
-				res = this.pick(criteria);
+
+				// array -> object
+				return evaluateArrayToObject(this, criteria, options)
 
 			} else {
-				// return array
-				res = _.map(criteria, function (prop) {
-					return this[prop];
-				}, this);
+				// array -> array
+				return evaluateArrayToArray(this, criteria, options);
 			}
 
 		} else if (_.isRegExp(criteria)) {
-			// return object
-			res = this.pick(criteria);
+
+			return evaluateRegExp(this, criteria, options);
+
+
 		} else {
 			// return object
-			res = this.pick(_.keys(criteria));
-			_.defaults(res, criteria);
-		}
 
-		return res;
+			return evaluateObject(this, criteria, options);
+		}
 	};
 
-	exports.evaluateOwn = function evaluateOwn(criteria, options) {
-
-		var res;
-
-		if (_.isArray(criteria)) {
-
-			if (options && options.format === 'object') {
-				// return object
-				res = this.pickOwn(criteria);
-			} else {
-				// return array
-				res = _.map(criteria, function (prop) {
-					if (this.hasOwnProperty(prop)) {
-						return this[prop];
-					}
-				});
-			}
-
-		} else if (_.isRegExp(criteria)) {
-			// return object
-			res = this.pickOwn(criteria);
-		} else {
-			// return object
-			res = this.pickOwn(_.keys(criteria));
-			_.defaults(res, criteria);
-		}
-
-		return res;
-	};
 });
 
 /* jshint ignore:start */
@@ -272,25 +304,6 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	*/
 
 	/**
-	 * Evaluates necessarily to an array ready to be
-	 * passed to function.apply(whatever, args)
-	 *
-	 * @method evaluateToArguments
-	 * @param scopeArgs {Array|Object}
-	 * @returns args {Array}
-	 */
-	exports.evaluateToArguments = function evaluateToArguments(scopeArgs) {
-
-		// [1] get values
-		var values = this.evaluate(scopeArgs);
-
-		// [3]
-		var args = _.isArray(values) ? values : [values];
-
-		return args;
-	};
-
-	/**
 	 * Invoke any function with the arguments and an optional context.
 	 *
 	 * @method invoke
@@ -303,18 +316,17 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 		// [0] get fn
 		fn = _.isFunction(fn) ? fn : this[fn];
 
-		// [1] get scopeArgs
-		scopeArgs = this.evaluateToArguments(scopeArgs);
+		// [1] get scopeArgs\
+		var args = this.evaluate(scopeArgs);
+		args = _.isArray(args) ? args : [args];
 
 		// [2] invoke
-		return fn.apply(null, scopeArgs.concat(Array.prototype.slice.call(arguments, 2)));
+		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
 	exports.partial = function partial(fn, scopeArgs) {
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
-
-
 
 	/**
 	 *
@@ -367,6 +379,11 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 			subject.assign(this, data, descriptor);
 		},
 
+	}, nonEnum);
+
+	// set to unwritable
+	scope.proto({
+
 		create: function create(data, descriptor) {
 
 			// create the subscope
@@ -388,13 +405,13 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 			return this;
 		},
 
-	}, nonEnum);
+	}, nonEnumWrite);
 
 
 	// proto
 	scope
 		.assignProto(require('./__scope/iteration'), nonEnumWrite)
-		.assignProto(require('./__scope/evaluation'), nonEnum)
-		.assignProto(require('./__scope/invocation'), nonEnum);
+		.assignProto(require('./__scope/evaluation'), nonEnumWrite)
+		.assignProto(require('./__scope/invocation'), nonEnumWrite);
 });
 

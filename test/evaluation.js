@@ -67,6 +67,23 @@
 					v3: 'g13',
 				});
 		});
+
+
+		it("evaluate(['prop1', ['prop2', 'prop3']]", function () {
+
+			this.local1.evaluate([
+					'v1',
+					['v2', 'v3'],
+					'v4'
+				])
+				.should.eql([
+					'g11',
+					['l12', 'g13'],
+					'l14'
+				])
+
+		})
+
 /*
 		it("evaluate('object:prop1, prop2, prop3')", function () {
 			this.local1.evaluate('object: id, v2, v4')

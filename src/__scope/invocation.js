@@ -27,25 +27,6 @@ define(function (require, exports, module) {
 	*/
 
 	/**
-	 * Evaluates necessarily to an array ready to be
-	 * passed to function.apply(whatever, args)
-	 *
-	 * @method evaluateToArguments
-	 * @param scopeArgs {Array|Object}
-	 * @returns args {Array}
-	 */
-	exports.evaluateToArguments = function evaluateToArguments(scopeArgs) {
-
-		// [1] get values
-		var values = this.evaluate(scopeArgs);
-
-		// [3]
-		var args = _.isArray(values) ? values : [values];
-
-		return args;
-	};
-
-	/**
 	 * Invoke any function with the arguments and an optional context.
 	 *
 	 * @method invoke
@@ -58,18 +39,17 @@ define(function (require, exports, module) {
 		// [0] get fn
 		fn = _.isFunction(fn) ? fn : this[fn];
 
-		// [1] get scopeArgs
-		scopeArgs = this.evaluateToArguments(scopeArgs);
+		// [1] get scopeArgs\
+		var args = this.evaluate(scopeArgs);
+		args = _.isArray(args) ? args : [args];
 
 		// [2] invoke
-		return fn.apply(null, scopeArgs.concat(Array.prototype.slice.call(arguments, 2)));
+		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
 	exports.partial = function partial(fn, scopeArgs) {
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
-
-
 
 	/**
 	 *

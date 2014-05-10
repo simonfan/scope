@@ -1,20 +1,17 @@
 {
-  "name": "scope",
-  "main": "built/scope.js",
-  "version": "0.2.1",
-  "description": "Some module...",
-  "dependencies": {
-    "lodash": "~2.4.1",
-    "subject": "0.5.5"
-  },
-  "devDependencies": {
-    "requirejs": "*",
-    "requirejs-text": "*",
-    "underscore": "*",
-    "jquery": "*",
-    "qunit": "*"
-  },
-  "resolutions": {
-    "subject": "0.5.5"
-  }
+	"name": "scope",
+	"main": "built/scope.js",
+	"version": "0.3.1",
+	"description": "Some module...",
+	"dependencies": {
+		"lodash": "~2.4.1",
+		"subject": "0.5.5"
+	},
+	"devDependencies": {
+		"requirejs": "*",
+		"requirejs-text": "*",
+		"underscore": "*",
+		"jquery": "*",
+		"qunit": "*"
+	}
 }

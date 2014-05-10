@@ -29,6 +29,11 @@ define(function (require, exports, module) {
 			subject.assign(this, data, descriptor);
 		},
 
+	}, nonEnum);
+
+	// set to unwritable
+	scope.proto({
+
 		create: function create(data, descriptor) {
 
 			// create the subscope
@@ -50,12 +55,12 @@ define(function (require, exports, module) {
 			return this;
 		},
 
-	}, nonEnum);
+	}, nonEnumWrite);
 
 
 	// proto
 	scope
 		.assignProto(require('./__scope/iteration'), nonEnumWrite)
-		.assignProto(require('./__scope/evaluation'), nonEnum)
-		.assignProto(require('./__scope/invocation'), nonEnum);
+		.assignProto(require('./__scope/evaluation'), nonEnumWrite)
+		.assignProto(require('./__scope/invocation'), nonEnumWrite);
 });

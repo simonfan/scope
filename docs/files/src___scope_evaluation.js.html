@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/index.js - scope</title>
+    <title>src/__scope/evaluation.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,20 +82,10 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/index.js</h1>
+                        <h1 class="file-heading">File: src/__scope/evaluation.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-//     scope
-//     (c) simonfan
-//     scope is licensed under the MIT terms.
-
-/**
- * AMD and CJS module.
- *
- * @module scope
- */
-
 /* jshint ignore:start */
 if (typeof define !== &#x27;function&#x27;) { var define = require(&#x27;amdefine&#x27;)(module) }
 /* jshint ignore:end */
@@ -104,53 +94,172 @@ define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
 
-	var _ = require(&#x27;lodash&#x27;),
-		subject = require(&#x27;subject&#x27;);
+	var _ = require(&#x27;lodash&#x27;);
 
-	// non enumerable descriptor
-	var nonEnum = { enumerable: false },
-		nonEnumWrite = { enumerable: false, writable: false };
 
-	var scope = module.exports = subject({
+	function evaluateArrayToObject(scope, criteria, options) {
+		var res = {};
 
-		initialize: function initializeScope(data, descriptor) {
-			subject.assign(this, data, descriptor);
-		},
+		if (options.own) {
 
-	}, nonEnum);
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion) &amp;&amp; scope.hasOwnProperty(criterion)) {
+					// criterion = &#x27;prop&#x27;;
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluateOwn(criterion, options);
+				}
+			});
 
-	// set to unwritable
-	scope.proto({
+		} else {
 
-		create: function create(data, descriptor) {
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion)) {
+					// criterion = &#x27;prop&#x27;;
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluate(criterion, options);
+				}
+			});
+		}
 
-			// create the subscope
-			var subscope = subject.assign(_.create(this), data, descriptor);
+		return res;
+	}
 
-			// set reference to the parentScope (make it non enumerable)
-			subject.assign(subscope, { parentScope: this }, nonEnum);
+	function evaluateArrayToArray(scope, criteria, options) {
 
-			return subscope;
-		},
+		if (options.own) {
 
-		assign: function assign(key, value) {
-			if (_.isString(key)) {
-				this[key] = value;
-			} else if (_.isObject(key)) {
-				_.assign(this, key);
+			return _.map(criteria, function (criterion) {
+
+				return (_.isString(criterion) &amp;&amp; scope.hasOwnProperty(criterion)) ?
+					// criterion = &#x27;prop&#x27;;
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluateOwn(criterion, options);
+			});
+
+		} else {
+
+			return _.map(criteria, function (criterion) {
+				return _.isString(criterion) ?
+					// criterion = &#x27;prop&#x27;;
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluate(criterion, options);
+			});
+
+		}
+	}
+
+
+
+
+
+	/// regexp
+	function evaluateRegExp(scope, criteria, options) {
+		// response always in object format
+		var res = {};
+
+		if (options.own) {
+
+			// loop own
+			scope.eachOwn(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
+
+		} else {
+
+			// loop everything
+			scope.each(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
+
+		}
+
+		return res;
+	}
+
+
+	// object
+	function evaluateObject(scope, criteria, options) {
+		var res = {};
+
+		if (options.own) {
+			_.each(criteria, function (value, prop) {
+
+				if (scope.hasOwnProperty(prop)) {
+					res[prop] = scope[prop];
+				}
+
+			});
+
+		} else {
+
+			_.each(criteria, function (value, prop) {
+				res[prop] = scope[prop];
+			});
+
+		}
+
+		// set defaults
+		_.defaults(res, criteria);
+
+		return res;
+	}
+
+	/**
+
+
+	scope.evaluate([&#x27;prop1&#x27;, &#x27;prop2&#x27;, [&#x27;prop3&#x27;, &#x27;prop4&#x27;]])
+
+
+	*/
+
+	/**
+	 *
+	 * @param options {Object}
+	 *     @param own {Boolean}
+	 *     @param format {String}
+	 */
+	exports.evaluate = function evaluate(criteria, options) {
+
+		options = options || {};
+
+		if (_.isArray(criteria)) {
+
+			if (options &amp;&amp; options.format === &#x27;object&#x27;) {
+
+				// array -&gt; object
+				return evaluateArrayToObject(this, criteria, options)
+
+			} else {
+				// array -&gt; array
+				return evaluateArrayToArray(this, criteria, options);
 			}
 
-			return this;
-		},
+		} else if (_.isRegExp(criteria)) {
 
-	}, nonEnumWrite);
+			return evaluateRegExp(this, criteria, options);
 
 
-	// proto
-	scope
-		.assignProto(require(&#x27;./__scope/iteration&#x27;), nonEnumWrite)
-		.assignProto(require(&#x27;./__scope/evaluation&#x27;), nonEnumWrite)
-		.assignProto(require(&#x27;./__scope/invocation&#x27;), nonEnumWrite);
+		} else {
+			// return object
+
+			return evaluateObject(this, criteria, options);
+		}
+	};
+
 });
 
     </pre>

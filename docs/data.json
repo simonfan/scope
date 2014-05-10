@@ -4,6 +4,13 @@
         "version": "0.0.0"
     },
     "files": {
+        "src/__scope/evaluation.js": {
+            "name": "src/__scope/evaluation.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__scope/invocation.js": {
             "name": "src/__scope/invocation.js",
             "modules": {},
@@ -44,27 +51,36 @@
     "classes": {},
     "classitems": [
         {
-            "file": "src/__scope/invocation.js",
-            "line": 29,
-            "description": "Evaluates necessarily to an array ready to be\npassed to function.apply(whatever, args)",
-            "itemtype": "method",
-            "name": "evaluateToArguments",
+            "file": "src/__scope/evaluation.js",
+            "line": 133,
+            "description": "scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation.js",
+            "line": 141,
             "params": [
                 {
-                    "name": "scopeArgs",
+                    "name": "options",
                     "description": "",
-                    "type": "Array|Object"
+                    "type": "Object"
+                },
+                {
+                    "name": "own",
+                    "description": "",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "format",
+                    "description": "",
+                    "type": "String"
                 }
             ],
-            "return": {
-                "description": "args",
-                "type": "Array"
-            },
             "class": ""
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 48,
+            "line": 29,
             "description": "Invoke any function with the arguments and an optional context.",
             "itemtype": "method",
             "name": "invoke",
@@ -90,7 +106,7 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 74,
+            "line": 54,
             "description": "Define/get a scope-aware function",
             "params": [
                 {
@@ -163,12 +179,16 @@
     ],
     "warnings": [
         {
-            "message": "replacing incorrect tag: returns with return",
-            "line": " src/__scope/invocation.js:29"
+            "message": "Missing item type\nscope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
+            "line": " src/__scope/evaluation.js:133"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/__scope/evaluation.js:141"
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",
-            "line": " src/__scope/invocation.js:74"
+            "line": " src/__scope/invocation.js:54"
         },
         {
             "message": "Missing item type\nFor in",
