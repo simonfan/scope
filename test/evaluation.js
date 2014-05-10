@@ -69,7 +69,7 @@
 		});
 
 
-		it("evaluate(['prop1', ['prop2', 'prop3']]", function () {
+		it("evaluate(['prop1', ['prop2', 'prop3']])", function () {
 
 			this.local1.evaluate([
 					'v1',
@@ -82,7 +82,15 @@
 					'l14'
 				])
 
+		});
+
+		it("evaluate(['prop1', {'prop2': undefined, 'prop3': undefined }, 'prop4'])", function () {
+
+			this.local1.evaluate(['id', { v1: undefined, v4: undefined }, 'v3'])
+				.should.eql(['local1', { v1: 'g11', v4: 'l14' }, 'g13']);
+
 		})
+
 
 /*
 		it("evaluate('object:prop1, prop2, prop3')", function () {
