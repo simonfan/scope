@@ -4,8 +4,15 @@
         "version": "0.0.0"
     },
     "files": {
-        "src/__scope/evaluation.js": {
-            "name": "src/__scope/evaluation.js",
+        "src/__scope/evaluation/string/parse.js": {
+            "name": "src/__scope/evaluation/string/parse.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/evaluation/index.js": {
+            "name": "src/__scope/evaluation/index.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -51,14 +58,32 @@
     "classes": {},
     "classitems": [
         {
-            "file": "src/__scope/evaluation.js",
-            "line": 133,
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 6,
+            "description": "\\s*      -> any (*) number of whitespace characters\n(?:      -> start non-capturing group of options\n (        -> start KEY&VALUE-REFERENCE capturing group\n  [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n )        -> close KEY&VALUE-REFERENCE capturing group\n |        -> or\n (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n  (        -> start KEY-ONLY capturing group\n   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n  )        -> close KEY-ONLY capturing group\n  :        -> match the colon (KEY:VALUE separator)\n  (        -> start VALUE-REFERENCE capturing group\n   .+?      -> match anything (.) at least once (+) non-greedy (?)\n  )        -> close VALUE-REFERENCE capturing group\n )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n)        -> close non-capturing group of options\n\\s*      -> match any number (*) of whitespace characters (\\s)\n(?:,|$)  -> until the comma or end of string",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 29,
+            "description": "(\\$\\w+) -> KEY&EVALUATED \t\t[1]\n(?:\n  (\\w+) -> LITERAL KEY \t\t[2]\n  :\\s*\n  (?:\n   (\\w+)  -> LITERAL VALUE \t[3]\n   |\n   (\\$\\w+) -> EVALUATED VALUE \t[4]\n  )\n )",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 110,
+            "description": "\\s*            -> any number of whitespaces\n (?:            -> start non-capturing OR group\n  ($\\w+)         -> capture EVALUATED\n |              -> OR\n  (\\w+)          -> capture LITERAL\n |              ->OR\n  \\{             -> match \"{\" followed by any number of whitespace characters\n  \\s*            ->\n  (.*?)          -> capture OBJECT\n  \\s*\\}          -> match \"}\" preceded by any number of whitespace characters\n )              -> close non-capturing OR group\n \\s*            -> followed by any number of whitespace characters\n (?:,|$)        -> until a comma or the end of the string.",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 136,
             "description": "scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
             "class": ""
         },
         {
-            "file": "src/__scope/evaluation.js",
-            "line": 141,
+            "file": "src/__scope/evaluation/index.js",
+            "line": 144,
             "params": [
                 {
                     "name": "options",
@@ -179,12 +204,24 @@
     ],
     "warnings": [
         {
+            "message": "Missing item type\n\\s*      -> any (*) number of whitespace characters\n(?:      -> start non-capturing group of options\n (        -> start KEY&VALUE-REFERENCE capturing group\n  [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n )        -> close KEY&VALUE-REFERENCE capturing group\n |        -> or\n (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n  (        -> start KEY-ONLY capturing group\n   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n  )        -> close KEY-ONLY capturing group\n  :        -> match the colon (KEY:VALUE separator)\n  (        -> start VALUE-REFERENCE capturing group\n   .+?      -> match anything (.) at least once (+) non-greedy (?)\n  )        -> close VALUE-REFERENCE capturing group\n )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n)        -> close non-capturing group of options\n\\s*      -> match any number (*) of whitespace characters (\\s)\n(?:,|$)  -> until the comma or end of string",
+            "line": " src/__scope/evaluation/string/parse.js:6"
+        },
+        {
+            "message": "Missing item type\n(\\$\\w+) -> KEY&EVALUATED \t\t[1]\n(?:\n  (\\w+) -> LITERAL KEY \t\t[2]\n  :\\s*\n  (?:\n   (\\w+)  -> LITERAL VALUE \t[3]\n   |\n   (\\$\\w+) -> EVALUATED VALUE \t[4]\n  )\n )",
+            "line": " src/__scope/evaluation/string/parse.js:29"
+        },
+        {
+            "message": "Missing item type\n\\s*            -> any number of whitespaces\n (?:            -> start non-capturing OR group\n  ($\\w+)         -> capture EVALUATED\n |              -> OR\n  (\\w+)          -> capture LITERAL\n |              ->OR\n  \\{             -> match \"{\" followed by any number of whitespace characters\n  \\s*            ->\n  (.*?)          -> capture OBJECT\n  \\s*\\}          -> match \"}\" preceded by any number of whitespace characters\n )              -> close non-capturing OR group\n \\s*            -> followed by any number of whitespace characters\n (?:,|$)        -> until a comma or the end of the string.",
+            "line": " src/__scope/evaluation/string/parse.js:110"
+        },
+        {
             "message": "Missing item type\nscope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
-            "line": " src/__scope/evaluation.js:133"
+            "line": " src/__scope/evaluation/index.js:136"
         },
         {
             "message": "Missing item type",
-            "line": " src/__scope/evaluation.js:141"
+            "line": " src/__scope/evaluation/index.js:144"
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",

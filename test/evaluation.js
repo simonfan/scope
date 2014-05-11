@@ -89,7 +89,19 @@
 			this.local1.evaluate(['id', { v1: undefined, v4: undefined }, 'v3'])
 				.should.eql(['local1', { v1: 'g11', v4: 'l14' }, 'g13']);
 
-		})
+		});
+
+
+		it("evaluate('literal, $evaluated, { $arg1, literalKey: $arg2 }')", function () {
+
+			this.local1.evaluate('literal, $v1, { $v4, literalKey: $v3, literalKey1: literalValue }')
+				.should.eql([
+					'literal',
+					'g11',
+					{ v4: 'l14', literalKey: 'g13', literalKey1: 'literalValue' }
+				]);
+
+		});
 
 
 /*

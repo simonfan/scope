@@ -9,6 +9,9 @@ define(function (require, exports, module) {
 	var _ = require('lodash');
 
 
+	var evaluateString = require('./string/index');
+
+
 	function evaluateArrayToObject(scope, criteria, options) {
 		var res = {};
 
@@ -165,10 +168,14 @@ define(function (require, exports, module) {
 			return evaluateRegExp(this, criteria, options);
 
 
-		} else {
+		} else if (_.isObject(criteria)) {
 			// return object
 
 			return evaluateObject(this, criteria, options);
+
+		} else if (_.isString(criteria)) {
+
+			return evaluateString(this, criteria, options);
 		}
 	};
 

@@ -99,15 +99,267 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 });
 
+define('__scope/evaluation/string/parse',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+	var _ = require('lodash');
+
+	/**
+	 * \s*      -> any (*) number of whitespace characters
+	 * (?:      -> start non-capturing group of options
+	 *  (        -> start KEY&VALUE-REFERENCE capturing group
+	 *   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
+	 *  )        -> close KEY&VALUE-REFERENCE capturing group
+	 *  |        -> or
+	 *  (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
+	 *   (        -> start KEY-ONLY capturing group
+	 *    [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
+	 *   )        -> close KEY-ONLY capturing group
+	 *   :        -> match the colon (KEY:VALUE separator)
+	 *   (        -> start VALUE-REFERENCE capturing group
+	 *    .+?      -> match anything (.) at least once (+) non-greedy (?)
+	 *   )        -> close VALUE-REFERENCE capturing group
+	 *  )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
+	 * )        -> close non-capturing group of options
+	 * \s*      -> match any number (*) of whitespace characters (\s)
+	 * (?:,|$)  -> until the comma or end of string
+	 */
+
+	// sample object string: "$arg3, key: $arg4, key1: literalValue"
+
+	/**
+	 *
+	 * (\$\w+) -> KEY&EVALUATED 		[1]
+	 *
+	 * (?:
+	 *  (\w+) -> LITERAL KEY 		[2]
+	 *  :\s*
+	 *  (?:
+	 *   (\w+)  -> LITERAL VALUE 	[3]
+	 *   |
+	 *   (\$\w+) -> EVALUATED VALUE 	[4]
+	 *  )
+	 * )
+	 */
+	var keyMatcher = /(?:\$(\w+)|(?:(\w+):\s*(?:(\w+)|\$(\w+))))\s*(?:,|$)/g;
+
+/*
+	/(?:
+		(\$\w+)
+		|
+		(?:
+			(\w+):\s*
+			(?:
+				(\$\w+)
+				|
+				(\w+)
+			)
+		)
+	)
+	\s*
+	(?:,|$)/g;
+*/
+
+	function parseObjectStr(str) {
+
+		var res = {},
+			keyMatch;
+
+		while (keyMatch = keyMatcher.exec(str)) {
+
+			// [0] full matched string
+			// [1] captured KEY&EVALUATED
+			// [2] captured LITERAL KEY
+			// [3] captured EVALUATED VALUE
+			// [4] captured LITERAL VALUE
+
+			if (keyMatch[1]) {
+				// key & evaluated value
+
+				res[keyMatch[1]] = {
+					type: 'evaluated',
+					value: keyMatch[1]
+				};
+
+			} else if (keyMatch[2]) {
+				// literal alias key
+
+				if (keyMatch[3]) {
+					// literal value
+					res[keyMatch[2]] = {
+						type: 'literal',
+						value: keyMatch[3]
+					};
+
+				} else if (keyMatch[4]) {
+					// evaluated value
+					res[keyMatch[2]] = {
+						type: 'evaluated',
+						value: keyMatch[4]
+					};
+				}
+
+			}
+
+		}
+
+		return res;
+
+	}
+
+
+	/**
+	 * \s*            -> any number of whitespaces
+	 *  (?:            -> start non-capturing OR group
+	 *   ($\w+)         -> capture EVALUATED
+	 *  |              -> OR
+	 *   (\w+)          -> capture LITERAL
+	 *  |              ->OR
+	 *   \{             -> match "{" followed by any number of whitespace characters
+	 *   \s*            ->
+	 *   (.*?)          -> capture OBJECT
+	 *   \s*\}          -> match "}" preceded by any number of whitespace characters
+	 *  )              -> close non-capturing OR group
+	 *  \s*            -> followed by any number of whitespace characters
+	 *  (?:,|$)        -> until a comma or the end of the string.
+	 */
+
+	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
+	var argMatcher = /\s*(?:(\w+)|\$(\w+)|\{\s*(.*?)\s*\})\s*(?:,|$)/g;
+	module.exports = function parseArgumentsStr(str) {
+		// results
+		var res = [],
+			argMatch;
+
+		while (argMatch = argMatcher.exec(str)) {
+
+			// [0] the matched string
+			// [1] captured LITERAL arg
+			// [2] captured EVALUATED arg
+			// [3] captured OBJECT arg
+
+			if (argMatch[1]) {
+				// LITERAL
+		//		console.log('LITERAL: ' + argMatch[1]);
+
+				res.push({
+					type: 'literal',
+					value: argMatch[1]
+				});
+
+			} else if (argMatch[2]) {
+				// EVALUATED
+		//		console.log('EVALUATED: ' + argMatch[2]);
+				res.push({
+					type: 'evaluated',
+					value: argMatch[2]
+				});
+
+
+			} if (argMatch[3]) {
+				// OBJECT
+		//		console.log('OBJECT: ' + argMatch[3]);
+
+				res.push({
+					type: 'object',
+					value: parseObjectStr(argMatch[3])
+				});
+			}
+		}
+
+		return res;
+	};
+});
+
+
+/*
+
+scope.partial(fn, ['key', 'key1'])
+
+*/
+;
 /* jshint ignore:start */
 
 /* jshint ignore:end */
 
-define('__scope/evaluation',['require','exports','module','lodash'],function (require, exports, module) {
+define('__scope/evaluation/string/index',['require','exports','module','lodash','./parse'],function (require, exports, module) {
 	
 
 
 	var _ = require('lodash');
+
+	var parseArgumentsStr = require('./parse');
+
+
+
+	function evaluateCriterion(scope, criterion, options) {
+
+		if (criterion.type === 'literal') {
+			// literal
+			return criterion.value;
+		} else if (criterion.type === 'evaluated') {
+			// evaluated
+			return scope[criterion.value];
+		} else {
+			// object
+			return evaluateObject(scope, criterion.value, options);
+		}
+	}
+
+
+	function evaluateObject(scope, criteria, options) {
+		var res = {};
+
+		_.each(criteria, function (criterion, prop) {
+			res[prop] = evaluateCriterion(scope, criterion, options);
+		});
+
+		return res;
+	}
+
+
+	function evaluateArray(scope, criteria, options) {
+
+		var res = [];
+
+		_.each(criteria, function (criterion) {
+
+			res.push(evaluateCriterion(scope, criterion, options))
+		}, scope);
+
+		return res;
+	}
+
+
+	module.exports = function evaluateString(scope, criteria, options) {
+
+		if (options.own) {
+
+		} else {
+
+
+			// [1] parse criteria
+			criteria = parseArgumentsStr(criteria);
+
+
+			return evaluateArray(scope, criteria, options);
+		}
+
+	};
+});
+
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
+define('__scope/evaluation/index',['require','exports','module','lodash','./string/index'],function (require, exports, module) {
+	
+
+
+	var _ = require('lodash');
+
+
+	var evaluateString = require('./string/index');
 
 
 	function evaluateArrayToObject(scope, criteria, options) {
@@ -266,10 +518,14 @@ define('__scope/evaluation',['require','exports','module','lodash'],function (re
 			return evaluateRegExp(this, criteria, options);
 
 
-		} else {
+		} else if (_.isObject(criteria)) {
 			// return object
 
 			return evaluateObject(this, criteria, options);
+
+		} else if (_.isString(criteria)) {
+
+			return evaluateString(this, criteria, options);
 		}
 	};
 
@@ -362,15 +618,15 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 
 /* jshint ignore:end */
 
-define('scope',['require','exports','module','lodash','subject','./__scope/iteration','./__scope/evaluation','./__scope/invocation'],function (require, exports, module) {
+define('scope',['require','exports','module','lodash','subject','./__scope/iteration','./__scope/evaluation/index','./__scope/invocation'],function (require, exports, module) {
 	
 
 
-	var _ = require('lodash'),
+	var _       = require('lodash'),
 		subject = require('subject');
 
 	// non enumerable descriptor
-	var nonEnum = { enumerable: false },
+	var nonEnum      = { enumerable: false },
 		nonEnumWrite = { enumerable: false, writable: false };
 
 	var scope = module.exports = subject({
@@ -411,7 +667,7 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 	// proto
 	scope
 		.assignProto(require('./__scope/iteration'), nonEnumWrite)
-		.assignProto(require('./__scope/evaluation'), nonEnumWrite)
+		.assignProto(require('./__scope/evaluation/index'), nonEnumWrite)
 		.assignProto(require('./__scope/invocation'), nonEnumWrite);
 });
 

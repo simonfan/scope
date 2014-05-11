@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__scope/evaluation.js - scope</title>
+    <title>src/__scope/evaluation/index.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,7 +82,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__scope/evaluation.js</h1>
+                        <h1 class="file-heading">File: src/__scope/evaluation/index.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -95,6 +95,9 @@ define(function (require, exports, module) {
 
 
 	var _ = require(&#x27;lodash&#x27;);
+
+
+	var evaluateString = require(&#x27;./string/index&#x27;);
 
 
 	function evaluateArrayToObject(scope, criteria, options) {
@@ -253,10 +256,14 @@ define(function (require, exports, module) {
 			return evaluateRegExp(this, criteria, options);
 
 
-		} else {
+		} else if (_.isObject(criteria)) {
 			// return object
 
 			return evaluateObject(this, criteria, options);
+
+		} else if (_.isString(criteria)) {
+
+			return evaluateString(this, criteria, options);
 		}
 	};
 

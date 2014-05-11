@@ -104,11 +104,11 @@ define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
 
-	var _ = require(&#x27;lodash&#x27;),
+	var _       = require(&#x27;lodash&#x27;),
 		subject = require(&#x27;subject&#x27;);
 
 	// non enumerable descriptor
-	var nonEnum = { enumerable: false },
+	var nonEnum      = { enumerable: false },
 		nonEnumWrite = { enumerable: false, writable: false };
 
 	var scope = module.exports = subject({
@@ -149,7 +149,7 @@ define(function (require, exports, module) {
 	// proto
 	scope
 		.assignProto(require(&#x27;./__scope/iteration&#x27;), nonEnumWrite)
-		.assignProto(require(&#x27;./__scope/evaluation&#x27;), nonEnumWrite)
+		.assignProto(require(&#x27;./__scope/evaluation/index&#x27;), nonEnumWrite)
 		.assignProto(require(&#x27;./__scope/invocation&#x27;), nonEnumWrite);
 });
 
