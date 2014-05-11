@@ -94,11 +94,53 @@
 
 		it("evaluate('literal, $evaluated, { $arg1, literalKey: $arg2 }')", function () {
 
-			this.local1.evaluate('literal, $v1, { $v4, literalKey: $v3, literalKey1: literalValue }')
+
+
+			this.local1.evaluate('[literal, $v1, { key: { $v2, key2: { $v3 } } }]')
 				.should.eql([
 					'literal',
 					'g11',
-					{ v4: 'l14', literalKey: 'g13', literalKey1: 'literalValue' }
+					{
+						key: {
+							v2: 'l12',
+							key2: {
+								v3: 'g13'
+							}
+						}
+					}
+				]);
+
+		});
+
+		it("deep string object", function () {
+
+
+			this.local1.evaluate('[literal, $v1, { key: { $v2, key2: { $v3 } } }]')
+				.should.eql([
+					'literal',
+					'g11',
+					{
+						key: {
+							v2: 'l12',
+							key2: {
+								v3: 'g13'
+							}
+						}
+					}
+				]);
+
+		});
+
+
+		it("deep string aray", function () {
+
+			this.local1.evaluate('[literal, [[$v1, $v3], $v2] ]')
+				.should.eql([
+					'literal',
+					[
+						['g11', 'g13'],
+						'l12'
+					]
 				]);
 
 		});

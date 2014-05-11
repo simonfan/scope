@@ -4,6 +4,13 @@
         "version": "0.0.0"
     },
     "files": {
+        "src/__scope/evaluation/string/index.js": {
+            "name": "src/__scope/evaluation/string/index.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__scope/evaluation/string/parse.js": {
             "name": "src/__scope/evaluation/string/parse.js",
             "modules": {},
@@ -58,33 +65,223 @@
     "classes": {},
     "classitems": [
         {
-            "file": "src/__scope/evaluation/string/parse.js",
-            "line": 6,
-            "description": "\\s*      -> any (*) number of whitespace characters\n(?:      -> start non-capturing group of options\n (        -> start KEY&VALUE-REFERENCE capturing group\n  [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n )        -> close KEY&VALUE-REFERENCE capturing group\n |        -> or\n (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n  (        -> start KEY-ONLY capturing group\n   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n  )        -> close KEY-ONLY capturing group\n  :        -> match the colon (KEY:VALUE separator)\n  (        -> start VALUE-REFERENCE capturing group\n   .+?      -> match anything (.) at least once (+) non-greedy (?)\n  )        -> close VALUE-REFERENCE capturing group\n )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n)        -> close non-capturing group of options\n\\s*      -> match any number (*) of whitespace characters (\\s)\n(?:,|$)  -> until the comma or end of string",
-            "class": ""
-        },
-        {
-            "file": "src/__scope/evaluation/string/parse.js",
-            "line": 29,
-            "description": "(\\$\\w+) -> KEY&EVALUATED \t\t[1]\n(?:\n  (\\w+) -> LITERAL KEY \t\t[2]\n  :\\s*\n  (?:\n   (\\w+)  -> LITERAL VALUE \t[3]\n   |\n   (\\$\\w+) -> EVALUATED VALUE \t[4]\n  )\n )",
-            "class": ""
-        },
-        {
-            "file": "src/__scope/evaluation/string/parse.js",
-            "line": 110,
-            "description": "\\s*            -> any number of whitespaces\n (?:            -> start non-capturing OR group\n  ($\\w+)         -> capture EVALUATED\n |              -> OR\n  (\\w+)          -> capture LITERAL\n |              ->OR\n  \\{             -> match \"{\" followed by any number of whitespace characters\n  \\s*            ->\n  (.*?)          -> capture OBJECT\n  \\s*\\}          -> match \"}\" preceded by any number of whitespace characters\n )              -> close non-capturing OR group\n \\s*            -> followed by any number of whitespace characters\n (?:,|$)        -> until a comma or the end of the string.",
-            "class": ""
-        },
-        {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 136,
-            "description": "scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
-            "class": ""
-        },
-        {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 144,
+            "file": "src/__scope/evaluation/string/index.js",
+            "line": 14,
+            "description": "[evaluate description]",
             "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "[type]"
+                },
+                {
+                    "name": "criterion",
+                    "description": "",
+                    "type": "[type]"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "[type]"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "[type]"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 12,
+            "description": "Parses out the result from a match result.\n\nCounts on a pattern of captures,\nthat are defined in the valueMatcherString",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 60,
+            "description": "The string that will match out the type and effective value.",
+            "itemtype": "property",
+            "name": "valueMatcherString",
+            "type": "RegExp",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 81,
+            "description": "(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 97,
+            "itemtype": "property",
+            "name": "objectValueMatcherString",
+            "type": "{String}",
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 113,
+            "description": "Parses a string that represents an object",
+            "itemtype": "method",
+            "name": "parseObjectString",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/parse.js",
+            "line": 159,
+            "description": "Parses a string that represents an arrray.",
+            "params": [
+                {
+                    "name": "str",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 14,
+            "description": "Picks the properties defined by the array\nand returns them in an object hash.",
+            "itemtype": "method",
+            "name": "evaluateArrayToObject",
+            "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "Array"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 57,
+            "description": "Picks the properties defined in the criteria array\nand returns an array with the values in the required order.",
+            "itemtype": "method",
+            "name": "evaluateArrayToArray",
+            "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "Array"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Array"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 95,
+            "description": "Loops through scope properties and picks\nthose that match the regular expression criteria.",
+            "itemtype": "method",
+            "name": "evaluateRegExp",
+            "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "RegExp"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 132,
+            "description": "Picks the properties defined on the criteria object\nfrom the scope and sets defaults.",
+            "itemtype": "method",
+            "name": "evaluateObject",
+            "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/index.js",
+            "line": 168,
+            "description": "The public method. Just chooses the right method to run\nbased on arguments and options",
+            "params": [
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "Array|Object|Regexp|String"
+                },
                 {
                     "name": "options",
                     "description": "",
@@ -204,24 +401,24 @@
     ],
     "warnings": [
         {
-            "message": "Missing item type\n\\s*      -> any (*) number of whitespace characters\n(?:      -> start non-capturing group of options\n (        -> start KEY&VALUE-REFERENCE capturing group\n  [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n )        -> close KEY&VALUE-REFERENCE capturing group\n |        -> or\n (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n  (        -> start KEY-ONLY capturing group\n   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)\n  )        -> close KEY-ONLY capturing group\n  :        -> match the colon (KEY:VALUE separator)\n  (        -> start VALUE-REFERENCE capturing group\n   .+?      -> match anything (.) at least once (+) non-greedy (?)\n  )        -> close VALUE-REFERENCE capturing group\n )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group\n)        -> close non-capturing group of options\n\\s*      -> match any number (*) of whitespace characters (\\s)\n(?:,|$)  -> until the comma or end of string",
-            "line": " src/__scope/evaluation/string/parse.js:6"
+            "message": "Missing item type\n[evaluate description]",
+            "line": " src/__scope/evaluation/string/index.js:14"
         },
         {
-            "message": "Missing item type\n(\\$\\w+) -> KEY&EVALUATED \t\t[1]\n(?:\n  (\\w+) -> LITERAL KEY \t\t[2]\n  :\\s*\n  (?:\n   (\\w+)  -> LITERAL VALUE \t[3]\n   |\n   (\\$\\w+) -> EVALUATED VALUE \t[4]\n  )\n )",
-            "line": " src/__scope/evaluation/string/parse.js:29"
+            "message": "Missing item type\nParses out the result from a match result.\n\nCounts on a pattern of captures,\nthat are defined in the valueMatcherString",
+            "line": " src/__scope/evaluation/string/parse.js:12"
         },
         {
-            "message": "Missing item type\n\\s*            -> any number of whitespaces\n (?:            -> start non-capturing OR group\n  ($\\w+)         -> capture EVALUATED\n |              -> OR\n  (\\w+)          -> capture LITERAL\n |              ->OR\n  \\{             -> match \"{\" followed by any number of whitespace characters\n  \\s*            ->\n  (.*?)          -> capture OBJECT\n  \\s*\\}          -> match \"}\" preceded by any number of whitespace characters\n )              -> close non-capturing OR group\n \\s*            -> followed by any number of whitespace characters\n (?:,|$)        -> until a comma or the end of the string.",
-            "line": " src/__scope/evaluation/string/parse.js:110"
+            "message": "Missing item type\n(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
+            "line": " src/__scope/evaluation/string/parse.js:81"
         },
         {
-            "message": "Missing item type\nscope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])",
-            "line": " src/__scope/evaluation/index.js:136"
+            "message": "Missing item type\nParses a string that represents an arrray.",
+            "line": " src/__scope/evaluation/string/parse.js:159"
         },
         {
-            "message": "Missing item type",
-            "line": " src/__scope/evaluation/index.js:144"
+            "message": "Missing item type\nThe public method. Just chooses the right method to run\nbased on arguments and options",
+            "line": " src/__scope/evaluation/index.js:168"
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",

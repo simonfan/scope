@@ -1,103 +1,148 @@
+/* jshint ignore:start */
+if (typeof define !== 'function') { var define = require('amdefine')(module) }
+/* jshint ignore:end */
+
 define(function (require, exports, module) {
 	'use strict';
 
 	var _ = require('lodash');
 
-	/**
-	 * \s*      -> any (*) number of whitespace characters
-	 * (?:      -> start non-capturing group of options
-	 *  (        -> start KEY&VALUE-REFERENCE capturing group
-	 *   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
-	 *  )        -> close KEY&VALUE-REFERENCE capturing group
-	 *  |        -> or
-	 *  (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
-	 *   (        -> start KEY-ONLY capturing group
-	 *    [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
-	 *   )        -> close KEY-ONLY capturing group
-	 *   :        -> match the colon (KEY:VALUE separator)
-	 *   (        -> start VALUE-REFERENCE capturing group
-	 *    .+?      -> match anything (.) at least once (+) non-greedy (?)
-	 *   )        -> close VALUE-REFERENCE capturing group
-	 *  )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
-	 * )        -> close non-capturing group of options
-	 * \s*      -> match any number (*) of whitespace characters (\s)
-	 * (?:,|$)  -> until the comma or end of string
-	 */
 
-	// sample object string: "$arg3, key: $arg4, key1: literalValue"
+
+	/**
+	 * Parses out the result from a match result.
+	 *
+	 * Counts on a pattern of captures,
+	 * that are defined in the valueMatcherString
+	 */
+	function evaluateValueMatch(match) {
+
+		var res = {};
+
+		// [0] the matched string
+		// [1] captured LITERAL value
+		// [2] captured EVALUATED value
+		// [3] captured ARRAY value
+		// [4] captured OBJECT value
+
+		if (match[1]) {
+			// LITERAL
+		//	console.log('LITERAL: ' + match[1]);
+
+			res.type  = 'literal';
+			res.value = match[1];
+
+		} else if (match[2]) {
+			// EVALUATED
+		//	console.log('EVALUATED: ' + match[2]);
+			res.type  = 'evaluated';
+			res.value = match[2];
+
+
+		} else if (match[3]) {
+			// ARRAY
+		//	console.log('ARRAY: ' + match[3]);
+
+			res.type  = 'array';
+			res.value = parseArrayString(match[3]);
+
+		} else if (match[4]) {
+			// OBJECT
+		//	console.log('OBJECT: ' + match[4]);
+
+			res.type  = 'object';
+			res.value = parseObjectString(match[4]);
+		}
+
+		return res;
+	};
+
+	/**
+	 * The string that will match out the type and effective value.
+	 *
+	 * @property valueMatcherString
+	 * @type RegExp
+	 */
+	var whitespace = '\\s*',
+		literal    = '(\\w+)',
+		evaluated  = '\\$(\\w+)',
+		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
+		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
+
+	var valueMatcherString = [
+		whitespace + '(?:',
+			literal, '|',
+			evaluated, '|',
+			array, '|',
+			object,
+		')' + whitespace
+	].join('');
+
+	/**
+	 * (\w+) LITERAL
+	 * \$(\W+) EVALUATED
+	 * \[\s*(.*?)\s*\] ARRAY
+	 * \{\s*(.*?)\s*\} OBJECT
+	 */
+	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
+	var valueMatcher = new RegExp(valueMatcherString);
+	function parseValueString(str) {
+		var res = {},
+			match = str.match(valueMatcher);
+
+		return evaluateValueMatch(match);
+	};
+
 
 	/**
 	 *
-	 * (\$\w+) -> KEY&EVALUATED 		[1]
-	 *
-	 * (?:
-	 *  (\w+) -> LITERAL KEY 		[2]
-	 *  :\s*
-	 *  (?:
-	 *   (\w+)  -> LITERAL VALUE 	[3]
-	 *   |
-	 *   (\$\w+) -> EVALUATED VALUE 	[4]
-	 *  )
-	 * )
+	 * @property objectValueMatcherString
+	 * @type {String}
 	 */
-	var keyMatcher = /(?:\$(\w+)|(?:(\w+):\s*(?:(\w+)|\$(\w+))))\s*(?:,|$)/g;
+	var objectValueMatcherString = [
+		whitespace + '(?:',
+			evaluated + whitespace + '(?:,|$)|',
+			'(?:',
+				literal,
+				':' + whitespace,
+				'(.*?)' + whitespace + '(?:,(?!.*?})|$)',
+			')',
+		')'
+	].join('');
 
-/*
-	/(?:
-		(\$\w+)
-		|
-		(?:
-			(\w+):\s*
-			(?:
-				(\$\w+)
-				|
-				(\w+)
-			)
-		)
-	)
-	\s*
-	(?:,|$)/g;
-*/
-
-	function parseObjectStr(str) {
+	/**
+	 * Parses a string that represents an object
+	 *
+	 * @method parseObjectString
+	 * @param  {String} str
+	 * @return {Object}
+	 */
+	function parseObjectString(str) {
 
 		var res = {},
-			keyMatch;
+			// create the regexp each time the method is called
+			// in order to renew the loop
+			objectValueMatcher = new RegExp(objectValueMatcherString, 'g'),
+			objectValueMatch;
 
-		while (keyMatch = keyMatcher.exec(str)) {
+		while (objectValueMatch = objectValueMatcher.exec(str)) {
 
 			// [0] full matched string
 			// [1] captured KEY&EVALUATED
 			// [2] captured LITERAL KEY
-			// [3] captured EVALUATED VALUE
-			// [4] captured LITERAL VALUE
+			// [3] captured VALUE STRING
 
-			if (keyMatch[1]) {
+			if (objectValueMatch[1]) {
 				// key & evaluated value
 
-				res[keyMatch[1]] = {
+				res[objectValueMatch[1]] = {
 					type: 'evaluated',
-					value: keyMatch[1]
+					value: objectValueMatch[1]
 				};
 
-			} else if (keyMatch[2]) {
-				// literal alias key
-
-				if (keyMatch[3]) {
-					// literal value
-					res[keyMatch[2]] = {
-						type: 'literal',
-						value: keyMatch[3]
-					};
-
-				} else if (keyMatch[4]) {
-					// evaluated value
-					res[keyMatch[2]] = {
-						type: 'evaluated',
-						value: keyMatch[4]
-					};
-				}
-
+			} else if (objectValueMatch[2]) {
+				// literal key = value string
+				res[objectValueMatch[2]] = parseValueString(objectValueMatch[3]);
 			}
 
 		}
@@ -107,72 +152,31 @@ define(function (require, exports, module) {
 	}
 
 
+
+	// sample array string: "literal, $evaluated, { $deepEval }"
+	var arrayValueMatcherString = valueMatcherString + '(?:,|$)';
+
 	/**
-	 * \s*            -> any number of whitespaces
-	 *  (?:            -> start non-capturing OR group
-	 *   ($\w+)         -> capture EVALUATED
-	 *  |              -> OR
-	 *   (\w+)          -> capture LITERAL
-	 *  |              ->OR
-	 *   \{             -> match "{" followed by any number of whitespace characters
-	 *   \s*            ->
-	 *   (.*?)          -> capture OBJECT
-	 *   \s*\}          -> match "}" preceded by any number of whitespace characters
-	 *  )              -> close non-capturing OR group
-	 *  \s*            -> followed by any number of whitespace characters
-	 *  (?:,|$)        -> until a comma or the end of the string.
+	 * Parses a string that represents an arrray.
+	 *
+	 * @param  {String} str
+	 * @return {Array}
 	 */
+	function parseArrayString(str) {
 
-	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
-	var argMatcher = /\s*(?:(\w+)|\$(\w+)|\{\s*(.*?)\s*\})\s*(?:,|$)/g;
-	module.exports = function parseArgumentsStr(str) {
-		// results
 		var res = [],
-			argMatch;
-
-		while (argMatch = argMatcher.exec(str)) {
-
-			// [0] the matched string
-			// [1] captured LITERAL arg
-			// [2] captured EVALUATED arg
-			// [3] captured OBJECT arg
-
-			if (argMatch[1]) {
-				// LITERAL
-		//		console.log('LITERAL: ' + argMatch[1]);
-
-				res.push({
-					type: 'literal',
-					value: argMatch[1]
-				});
-
-			} else if (argMatch[2]) {
-				// EVALUATED
-		//		console.log('EVALUATED: ' + argMatch[2]);
-				res.push({
-					type: 'evaluated',
-					value: argMatch[2]
-				});
+			arrayValueMatcher = new RegExp(arrayValueMatcherString, 'g'),
+			match;
 
 
-			} if (argMatch[3]) {
-				// OBJECT
-		//		console.log('OBJECT: ' + argMatch[3]);
-
-				res.push({
-					type: 'object',
-					value: parseObjectStr(argMatch[3])
-				});
-			}
+		while (match = arrayValueMatcher.exec(str)) {
+			res.push(evaluateValueMatch(match));
 		}
 
 		return res;
-	};
+	}
+
+
+	// export the valueString parser
+	module.exports = parseValueString;
 });
-
-
-/*
-
-scope.partial(fn, ['key', 'key1'])
-
-*/

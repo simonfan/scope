@@ -99,106 +99,151 @@ define('__scope/iteration',['require','exports','module','lodash'],function (req
 
 });
 
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
 define('__scope/evaluation/string/parse',['require','exports','module','lodash'],function (require, exports, module) {
 	
 
 	var _ = require('lodash');
 
-	/**
-	 * \s*      -> any (*) number of whitespace characters
-	 * (?:      -> start non-capturing group of options
-	 *  (        -> start KEY&VALUE-REFERENCE capturing group
-	 *   [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
-	 *  )        -> close KEY&VALUE-REFERENCE capturing group
-	 *  |        -> or
-	 *  (?:      -> start KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
-	 *   (        -> start KEY-ONLY capturing group
-	 *    [^:]+?   -> match anything but colon ([^:]) at least once (+) non-greedy (?)
-	 *   )        -> close KEY-ONLY capturing group
-	 *   :        -> match the colon (KEY:VALUE separator)
-	 *   (        -> start VALUE-REFERENCE capturing group
-	 *    .+?      -> match anything (.) at least once (+) non-greedy (?)
-	 *   )        -> close VALUE-REFERENCE capturing group
-	 *  )        -> close KEY-ONLY & VALUE-REFERENCE-ONLY non-capturing group
-	 * )        -> close non-capturing group of options
-	 * \s*      -> match any number (*) of whitespace characters (\s)
-	 * (?:,|$)  -> until the comma or end of string
-	 */
 
-	// sample object string: "$arg3, key: $arg4, key1: literalValue"
+
+	/**
+	 * Parses out the result from a match result.
+	 *
+	 * Counts on a pattern of captures,
+	 * that are defined in the valueMatcherString
+	 */
+	function evaluateValueMatch(match) {
+
+		var res = {};
+
+		// [0] the matched string
+		// [1] captured LITERAL value
+		// [2] captured EVALUATED value
+		// [3] captured ARRAY value
+		// [4] captured OBJECT value
+
+		if (match[1]) {
+			// LITERAL
+		//	console.log('LITERAL: ' + match[1]);
+
+			res.type  = 'literal';
+			res.value = match[1];
+
+		} else if (match[2]) {
+			// EVALUATED
+		//	console.log('EVALUATED: ' + match[2]);
+			res.type  = 'evaluated';
+			res.value = match[2];
+
+
+		} else if (match[3]) {
+			// ARRAY
+		//	console.log('ARRAY: ' + match[3]);
+
+			res.type  = 'array';
+			res.value = parseArrayString(match[3]);
+
+		} else if (match[4]) {
+			// OBJECT
+		//	console.log('OBJECT: ' + match[4]);
+
+			res.type  = 'object';
+			res.value = parseObjectString(match[4]);
+		}
+
+		return res;
+	};
+
+	/**
+	 * The string that will match out the type and effective value.
+	 *
+	 * @property valueMatcherString
+	 * @type RegExp
+	 */
+	var whitespace = '\\s*',
+		literal    = '(\\w+)',
+		evaluated  = '\\$(\\w+)',
+		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
+		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
+
+	var valueMatcherString = [
+		whitespace + '(?:',
+			literal, '|',
+			evaluated, '|',
+			array, '|',
+			object,
+		')' + whitespace
+	].join('');
+
+	/**
+	 * (\w+) LITERAL
+	 * \$(\W+) EVALUATED
+	 * \[\s*(.*?)\s*\] ARRAY
+	 * \{\s*(.*?)\s*\} OBJECT
+	 */
+	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
+	var valueMatcher = new RegExp(valueMatcherString);
+	function parseValueString(str) {
+		var res = {},
+			match = str.match(valueMatcher);
+
+		return evaluateValueMatch(match);
+	};
+
 
 	/**
 	 *
-	 * (\$\w+) -> KEY&EVALUATED 		[1]
-	 *
-	 * (?:
-	 *  (\w+) -> LITERAL KEY 		[2]
-	 *  :\s*
-	 *  (?:
-	 *   (\w+)  -> LITERAL VALUE 	[3]
-	 *   |
-	 *   (\$\w+) -> EVALUATED VALUE 	[4]
-	 *  )
-	 * )
+	 * @property objectValueMatcherString
+	 * @type {String}
 	 */
-	var keyMatcher = /(?:\$(\w+)|(?:(\w+):\s*(?:(\w+)|\$(\w+))))\s*(?:,|$)/g;
+	var objectValueMatcherString = [
+		whitespace + '(?:',
+			evaluated + whitespace + '(?:,|$)|',
+			'(?:',
+				literal,
+				':' + whitespace,
+				'(.*?)' + whitespace + '(?:,(?!.*?})|$)',
+			')',
+		')'
+	].join('');
 
-/*
-	/(?:
-		(\$\w+)
-		|
-		(?:
-			(\w+):\s*
-			(?:
-				(\$\w+)
-				|
-				(\w+)
-			)
-		)
-	)
-	\s*
-	(?:,|$)/g;
-*/
-
-	function parseObjectStr(str) {
+	/**
+	 * Parses a string that represents an object
+	 *
+	 * @method parseObjectString
+	 * @param  {String} str
+	 * @return {Object}
+	 */
+	function parseObjectString(str) {
 
 		var res = {},
-			keyMatch;
+			// create the regexp each time the method is called
+			// in order to renew the loop
+			objectValueMatcher = new RegExp(objectValueMatcherString, 'g'),
+			objectValueMatch;
 
-		while (keyMatch = keyMatcher.exec(str)) {
+		while (objectValueMatch = objectValueMatcher.exec(str)) {
 
 			// [0] full matched string
 			// [1] captured KEY&EVALUATED
 			// [2] captured LITERAL KEY
-			// [3] captured EVALUATED VALUE
-			// [4] captured LITERAL VALUE
+			// [3] captured VALUE STRING
 
-			if (keyMatch[1]) {
+			if (objectValueMatch[1]) {
 				// key & evaluated value
 
-				res[keyMatch[1]] = {
+				res[objectValueMatch[1]] = {
 					type: 'evaluated',
-					value: keyMatch[1]
+					value: objectValueMatch[1]
 				};
 
-			} else if (keyMatch[2]) {
-				// literal alias key
-
-				if (keyMatch[3]) {
-					// literal value
-					res[keyMatch[2]] = {
-						type: 'literal',
-						value: keyMatch[3]
-					};
-
-				} else if (keyMatch[4]) {
-					// evaluated value
-					res[keyMatch[2]] = {
-						type: 'evaluated',
-						value: keyMatch[4]
-					};
-				}
-
+			} else if (objectValueMatch[2]) {
+				// literal key = value string
+				res[objectValueMatch[2]] = parseValueString(objectValueMatch[3]);
 			}
 
 		}
@@ -208,76 +253,35 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	}
 
 
+
+	// sample array string: "literal, $evaluated, { $deepEval }"
+	var arrayValueMatcherString = valueMatcherString + '(?:,|$)';
+
 	/**
-	 * \s*            -> any number of whitespaces
-	 *  (?:            -> start non-capturing OR group
-	 *   ($\w+)         -> capture EVALUATED
-	 *  |              -> OR
-	 *   (\w+)          -> capture LITERAL
-	 *  |              ->OR
-	 *   \{             -> match "{" followed by any number of whitespace characters
-	 *   \s*            ->
-	 *   (.*?)          -> capture OBJECT
-	 *   \s*\}          -> match "}" preceded by any number of whitespace characters
-	 *  )              -> close non-capturing OR group
-	 *  \s*            -> followed by any number of whitespace characters
-	 *  (?:,|$)        -> until a comma or the end of the string.
+	 * Parses a string that represents an arrray.
+	 *
+	 * @param  {String} str
+	 * @return {Array}
 	 */
+	function parseArrayString(str) {
 
-	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
-	var argMatcher = /\s*(?:(\w+)|\$(\w+)|\{\s*(.*?)\s*\})\s*(?:,|$)/g;
-	module.exports = function parseArgumentsStr(str) {
-		// results
 		var res = [],
-			argMatch;
-
-		while (argMatch = argMatcher.exec(str)) {
-
-			// [0] the matched string
-			// [1] captured LITERAL arg
-			// [2] captured EVALUATED arg
-			// [3] captured OBJECT arg
-
-			if (argMatch[1]) {
-				// LITERAL
-		//		console.log('LITERAL: ' + argMatch[1]);
-
-				res.push({
-					type: 'literal',
-					value: argMatch[1]
-				});
-
-			} else if (argMatch[2]) {
-				// EVALUATED
-		//		console.log('EVALUATED: ' + argMatch[2]);
-				res.push({
-					type: 'evaluated',
-					value: argMatch[2]
-				});
+			arrayValueMatcher = new RegExp(arrayValueMatcherString, 'g'),
+			match;
 
 
-			} if (argMatch[3]) {
-				// OBJECT
-		//		console.log('OBJECT: ' + argMatch[3]);
-
-				res.push({
-					type: 'object',
-					value: parseObjectStr(argMatch[3])
-				});
-			}
+		while (match = arrayValueMatcher.exec(str)) {
+			res.push(evaluateValueMatch(match));
 		}
 
 		return res;
-	};
+	}
+
+
+	// export the valueString parser
+	module.exports = parseValueString;
 });
 
-
-/*
-
-scope.partial(fn, ['key', 'key1'])
-
-*/
-;
 /* jshint ignore:start */
 
 /* jshint ignore:end */
@@ -291,19 +295,35 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 	var parseArgumentsStr = require('./parse');
 
 
+	/**
+	 * [evaluate description]
+	 * @param  {[type]} scope
+	 * @param  {[type]} criterion
+	 * @param  {[type]} options
+	 * @return {[type]}
+	 */
+	function evaluate(scope, criterion, options) {
 
-	function evaluateCriterion(scope, criterion, options) {
+		var res;
 
 		if (criterion.type === 'literal') {
 			// literal
-			return criterion.value;
+			res = criterion.value;
 		} else if (criterion.type === 'evaluated') {
 			// evaluated
-			return scope[criterion.value];
-		} else {
+			res = scope[criterion.value];
+		} else if (criterion.type === 'array') {
+
+			// array
+			res = evaluateArray(scope, criterion.value, options);
+
+		} else if (criterion.type === 'object') {
 			// object
-			return evaluateObject(scope, criterion.value, options);
+			res = evaluateObject(scope, criterion.value, options);
+
 		}
+
+		return res;
 	}
 
 
@@ -311,7 +331,7 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 		var res = {};
 
 		_.each(criteria, function (criterion, prop) {
-			res[prop] = evaluateCriterion(scope, criterion, options);
+			res[prop] = evaluate(scope, criterion, options);
 		});
 
 		return res;
@@ -324,28 +344,24 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 
 		_.each(criteria, function (criterion) {
 
-			res.push(evaluateCriterion(scope, criterion, options))
+			res.push(evaluate(scope, criterion, options));
 		}, scope);
 
 		return res;
 	}
 
 
-	module.exports = function evaluateString(scope, criteria, options) {
+	function evaluateValueString(scope, criteria, options) {
 
-		if (options.own) {
+		// [1] parse criteria
+		criteria = parseArgumentsStr(criteria);
 
-		} else {
-
-
-			// [1] parse criteria
-			criteria = parseArgumentsStr(criteria);
-
-
-			return evaluateArray(scope, criteria, options);
-		}
+		return evaluate(scope, criteria, options);
 
 	};
+
+
+	module.exports = evaluateValueString;
 });
 
 /* jshint ignore:start */
@@ -361,7 +377,16 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 
 	var evaluateString = require('./string/index');
 
-
+	/**
+	 * Picks the properties defined by the array
+	 * and returns them in an object hash.
+	 *
+	 * @method evaluateArrayToObject
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateArrayToObject(scope, criteria, options) {
 		var res = {};
 
@@ -395,6 +420,16 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 		return res;
 	}
 
+	/**
+	 * Picks the properties defined in the criteria array
+	 * and returns an array with the values in the required order.
+	 *
+	 * @method evaluateArrayToArray
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Array}
+	 */
 	function evaluateArrayToArray(scope, criteria, options) {
 
 		if (options.own) {
@@ -423,11 +458,16 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 		}
 	}
 
-
-
-
-
-	/// regexp
+	/**
+	 * Loops through scope properties and picks
+	 * those that match the regular expression criteria.
+	 *
+	 * @method evaluateRegExp
+	 * @param  {Object} scope
+	 * @param  {RegExp} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateRegExp(scope, criteria, options) {
 		// response always in object format
 		var res = {};
@@ -455,8 +495,16 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 		return res;
 	}
 
-
-	// object
+	/**
+	 * Picks the properties defined on the criteria object
+	 * from the scope and sets defaults.
+	 *
+	 * @method evaluateObject
+	 * @param  {Object} scope
+	 * @param  {Object} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateObject(scope, criteria, options) {
 		var res = {};
 
@@ -484,15 +532,10 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 	}
 
 	/**
-
-
-	scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])
-
-
-	*/
-
-	/**
+	 * The public method. Just chooses the right method to run
+	 * based on arguments and options
 	 *
+	 * @param {Array|Object|Regexp|String} criteria
 	 * @param options {Object}
 	 *     @param own {Boolean}
 	 *     @param format {String}
@@ -506,7 +549,7 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 			if (options && options.format === 'object') {
 
 				// array -> object
-				return evaluateArrayToObject(this, criteria, options)
+				return evaluateArrayToObject(this, criteria, options);
 
 			} else {
 				// array -> array

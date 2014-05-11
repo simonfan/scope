@@ -11,27 +11,55 @@ define(function (require, exports, module) {
 	var parseArgumentsStr = require('./parse');
 
 
+	/**
+	 * @method evaluate
+	 * @param  {Object} scope
+	 * @param  {Object} criterion
+	 *     @param {String} type Describes the evaluator to be used
+	 *     @param {*} value
+	 * @param  {Objects} options
+	 * @return {Object|Array|*}
+	 */
+	function evaluate(scope, criterion, options) {
 
-	function evaluateCriterion(scope, criterion, options) {
+		var res;
 
 		if (criterion.type === 'literal') {
 			// literal
-			return criterion.value;
+			res = criterion.value;
 		} else if (criterion.type === 'evaluated') {
 			// evaluated
-			return scope[criterion.value];
-		} else {
+			res = scope[criterion.value];
+		} else if (criterion.type === 'array') {
+
+			// array
+			res = evaluateArray(scope, criterion.value, options);
+
+		} else if (criterion.type === 'object') {
 			// object
-			return evaluateObject(scope, criterion.value, options);
+			res = evaluateObject(scope, criterion.value, options);
+
 		}
+
+		return res;
 	}
 
-
+	/**
+	 * Evaluates an object criteria
+	 *
+	 * PERHAPS SHOULD MERGE WITH OBJECT EVALUATOR
+	 *
+	 * @method evaluateObject
+	 * @param  {[type]} scope
+	 * @param  {[type]} criteria
+	 * @param  {[type]} options
+	 * @return {[type]}
+	 */
 	function evaluateObject(scope, criteria, options) {
 		var res = {};
 
 		_.each(criteria, function (criterion, prop) {
-			res[prop] = evaluateCriterion(scope, criterion, options);
+			res[prop] = evaluate(scope, criterion, options);
 		});
 
 		return res;
@@ -44,26 +72,22 @@ define(function (require, exports, module) {
 
 		_.each(criteria, function (criterion) {
 
-			res.push(evaluateCriterion(scope, criterion, options))
+			res.push(evaluate(scope, criterion, options));
 		}, scope);
 
 		return res;
 	}
 
 
-	module.exports = function evaluateString(scope, criteria, options) {
+	function evaluateValueString(scope, criteria, options) {
 
-		if (options.own) {
+		// [1] parse criteria
+		criteria = parseArgumentsStr(criteria);
 
-		} else {
+		return evaluate(scope, criteria, options);
+
+	}
 
 
-			// [1] parse criteria
-			criteria = parseArgumentsStr(criteria);
-
-
-			return evaluateArray(scope, criteria, options);
-		}
-
-	};
+	module.exports = evaluateValueString;
 });

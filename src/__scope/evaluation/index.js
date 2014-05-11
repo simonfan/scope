@@ -11,7 +11,16 @@ define(function (require, exports, module) {
 
 	var evaluateString = require('./string/index');
 
-
+	/**
+	 * Picks the properties defined by the array
+	 * and returns them in an object hash.
+	 *
+	 * @method evaluateArrayToObject
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateArrayToObject(scope, criteria, options) {
 		var res = {};
 
@@ -45,6 +54,16 @@ define(function (require, exports, module) {
 		return res;
 	}
 
+	/**
+	 * Picks the properties defined in the criteria array
+	 * and returns an array with the values in the required order.
+	 *
+	 * @method evaluateArrayToArray
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Array}
+	 */
 	function evaluateArrayToArray(scope, criteria, options) {
 
 		if (options.own) {
@@ -73,11 +92,16 @@ define(function (require, exports, module) {
 		}
 	}
 
-
-
-
-
-	/// regexp
+	/**
+	 * Loops through scope properties and picks
+	 * those that match the regular expression criteria.
+	 *
+	 * @method evaluateRegExp
+	 * @param  {Object} scope
+	 * @param  {RegExp} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateRegExp(scope, criteria, options) {
 		// response always in object format
 		var res = {};
@@ -105,8 +129,16 @@ define(function (require, exports, module) {
 		return res;
 	}
 
-
-	// object
+	/**
+	 * Picks the properties defined on the criteria object
+	 * from the scope and sets defaults.
+	 *
+	 * @method evaluateObject
+	 * @param  {Object} scope
+	 * @param  {Object} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
 	function evaluateObject(scope, criteria, options) {
 		var res = {};
 
@@ -134,15 +166,10 @@ define(function (require, exports, module) {
 	}
 
 	/**
-
-
-	scope.evaluate(['prop1', 'prop2', ['prop3', 'prop4']])
-
-
-	*/
-
-	/**
+	 * The public method. Just chooses the right method to run
+	 * based on arguments and options
 	 *
+	 * @param {Array|Object|Regexp|String} criteria
 	 * @param options {Object}
 	 *     @param own {Boolean}
 	 *     @param format {String}
@@ -156,7 +183,7 @@ define(function (require, exports, module) {
 			if (options && options.format === 'object') {
 
 				// array -> object
-				return evaluateArrayToObject(this, criteria, options)
+				return evaluateArrayToObject(this, criteria, options);
 
 			} else {
 				// array -> array
