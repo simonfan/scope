@@ -156,7 +156,9 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 		}
 
 		return res;
-	};
+	}
+
+
 
 	/**
 	 * The string that will match out the type and effective value.
@@ -164,6 +166,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	 * @property valueMatcherString
 	 * @type RegExp
 	 */
+	/* jshint ignore:start */
 	var whitespace = '\\s*',
 		literal    = '(\\w+)',
 		evaluated  = '\\$(\\w+)',
@@ -178,6 +181,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 			object,
 		')' + whitespace
 	].join('');
+	/* jshint ignore:end */
 
 	/**
 	 * (\w+) LITERAL
@@ -192,7 +196,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 			match = str.match(valueMatcher);
 
 		return evaluateValueMatch(match);
-	};
+	}
 
 
 	/**
@@ -200,6 +204,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	 * @property objectValueMatcherString
 	 * @type {String}
 	 */
+	/* jshint ignore:start */
 	var objectValueMatcherString = [
 		whitespace + '(?:',
 			evaluated + whitespace + '(?:,|$)|',
@@ -210,6 +215,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 			')',
 		')'
 	].join('');
+	/* jshint ignore:end */
 
 	/**
 	 * Parses a string that represents an object
@@ -296,11 +302,13 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 
 
 	/**
-	 * [evaluate description]
-	 * @param  {[type]} scope
-	 * @param  {[type]} criterion
-	 * @param  {[type]} options
-	 * @return {[type]}
+	 * @method evaluate
+	 * @param  {Object} scope
+	 * @param  {Object} criterion
+	 *     @param {String} type Describes the evaluator to be used
+	 *     @param {*} value
+	 * @param  {Objects} options
+	 * @return {Object|Array|*}
 	 */
 	function evaluate(scope, criterion, options) {
 
@@ -326,7 +334,17 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 		return res;
 	}
 
-
+	/**
+	 * Evaluates an object criteria
+	 *
+	 * PERHAPS SHOULD MERGE WITH OBJECT EVALUATOR
+	 *
+	 * @method evaluateObject
+	 * @param  {[type]} scope
+	 * @param  {[type]} criteria
+	 * @param  {[type]} options
+	 * @return {[type]}
+	 */
 	function evaluateObject(scope, criteria, options) {
 		var res = {};
 
@@ -358,7 +376,7 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 
 		return evaluate(scope, criteria, options);
 
-	};
+	}
 
 
 	module.exports = evaluateValueString;
@@ -584,24 +602,6 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 
 	var _ = require('lodash');
 
-	/*
-
-		var arch = scope({
-
-		});
-
-		arch.fn('alert', function (contextualMessage, msg) {
-			return 'DANGER! ' + contextualMessage + ' ' + msg;
-		}, ['message']);
-
-
-		arch.message = 'some message';
-
-		arch.alert();					// 'DANGER! some message'
-		arch.alert('More messages')		// 'DANGER! some message More messages'
-
-	*/
-
 	/**
 	 * Invoke any function with the arguments and an optional context.
 	 *
@@ -623,6 +623,15 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
+	/**
+	 * Creates a function that will have the first arguments
+	 * bound to the scope.
+	 *
+	 * @method partial
+	 * @param  {Function} fn        [description]
+	 * @param  {Array|Object|RegExp|String}   scopeArgs [description]
+	 * @return {Function}             [description]
+	 */
 	exports.partial = function partial(fn, scopeArgs) {
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
@@ -647,6 +656,25 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	};
 });
 
+
+	/*
+
+		var arch = scope({
+
+		});
+
+		arch.fn('alert', function (contextualMessage, msg) {
+			return 'DANGER! ' + contextualMessage + ' ' + msg;
+		}, ['message']);
+
+
+		arch.message = 'some message';
+
+		arch.alert();					// 'DANGER! some message'
+		arch.alert('More messages')		// 'DANGER! some message More messages'
+
+	*/
+;
 //     scope
 //     (c) simonfan
 //     scope is licensed under the MIT terms.
@@ -674,8 +702,16 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 
 	var scope = module.exports = subject({
 
+		/**
+		 * Assign initial data with descriptor.
+		 * That's all. :)
+		 *
+		 * @method initialize
+		 * @param  {Object} data       [description]
+		 * @param  {Object} descriptor [description]
+		 */
 		initialize: function initializeScope(data, descriptor) {
-			subject.assign(this, data, descriptor);
+			this.assign(data, descriptor);
 		},
 
 	}, nonEnum);
@@ -683,6 +719,14 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 	// set to unwritable
 	scope.proto({
 
+		/**
+		 * Creates a subscope that prototypically inherits from this object.
+		 *
+		 * @method create
+		 * @param  {Object} data       [description]
+		 * @param  {Object} descriptor [description]
+		 * @return {Object}            [description]
+		 */
 		create: function create(data, descriptor) {
 
 			// create the subscope
@@ -694,12 +738,37 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 			return subscope;
 		},
 
-		assign: function assign(key, value) {
-			if (_.isString(key)) {
-				this[key] = value;
-			} else if (_.isObject(key)) {
-				_.assign(this, key);
+		/**
+		 * Assigns values to the scope object.
+		 *
+		 * @method assign
+		 * @param {Object|String} [data|key]
+		 * @param {Object|*} [descriptor|value]
+		 * @param {null|Object} [descriptor]
+		 * @return {Object} [this]
+		 */
+		assign: function assign() {
+
+			var data, descriptor;
+
+
+			if (_.isString(arguments[0])) {
+				// arguments = [key, value, descriptor]
+
+				data       = ({})[arguments[0]] = arguments[1];
+				descriptor = arguments[2];
+
+			} else if (_.isObject(arguments[0])) {
+				// arguments = [data, descriptor]
+
+				data       = arguments[0];
+				descriptor = arguments[1];
 			}
+
+			// assign using subject assign helper
+			// as it accepts a descriptor object
+
+			subject.assign(this, data, descriptor);
 
 			return this;
 		},
@@ -709,8 +778,11 @@ define('scope',['require','exports','module','lodash','subject','./__scope/itera
 
 	// proto
 	scope
-		.assignProto(require('./__scope/iteration'), nonEnumWrite)
-		.assignProto(require('./__scope/evaluation/index'), nonEnumWrite)
-		.assignProto(require('./__scope/invocation'), nonEnumWrite);
+		// each, eachOwn
+		.assignProto(require('./__scope/iteration'), nonEnumWrite)		// non evaluation, non writable
+		// evaluate
+		.assignProto(require('./__scope/evaluation/index'), nonEnum)	// non enumerable, but WRITABLE
+		// invoke, partial, fn
+		.assignProto(require('./__scope/invocation'), nonEnum);			// non enumerable, but WRITABLE
 });
 

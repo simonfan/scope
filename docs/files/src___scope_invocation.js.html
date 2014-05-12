@@ -96,24 +96,6 @@ define(function (require, exports, module) {
 
 	var _ = require(&#x27;lodash&#x27;);
 
-	/*
-
-		var arch = scope({
-
-		});
-
-		arch.fn(&#x27;alert&#x27;, function (contextualMessage, msg) {
-			return &#x27;DANGER! &#x27; + contextualMessage + &#x27; &#x27; + msg;
-		}, [&#x27;message&#x27;]);
-
-
-		arch.message = &#x27;some message&#x27;;
-
-		arch.alert();					// &#x27;DANGER! some message&#x27;
-		arch.alert(&#x27;More messages&#x27;)		// &#x27;DANGER! some message More messages&#x27;
-
-	*/
-
 	/**
 	 * Invoke any function with the arguments and an optional context.
 	 *
@@ -135,6 +117,15 @@ define(function (require, exports, module) {
 		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
+	/**
+	 * Creates a function that will have the first arguments
+	 * bound to the scope.
+	 *
+	 * @method partial
+	 * @param  {Function} fn        [description]
+	 * @param  {Array|Object|RegExp|String}   scopeArgs [description]
+	 * @return {Function}             [description]
+	 */
 	exports.partial = function partial(fn, scopeArgs) {
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
@@ -158,6 +149,25 @@ define(function (require, exports, module) {
 		return fn;
 	};
 });
+
+
+	/*
+
+		var arch = scope({
+
+		});
+
+		arch.fn(&#x27;alert&#x27;, function (contextualMessage, msg) {
+			return &#x27;DANGER! &#x27; + contextualMessage + &#x27; &#x27; + msg;
+		}, [&#x27;message&#x27;]);
+
+
+		arch.message = &#x27;some message&#x27;;
+
+		arch.alert();					// &#x27;DANGER! some message&#x27;
+		arch.alert(&#x27;More messages&#x27;)		// &#x27;DANGER! some message More messages&#x27;
+
+	*/
 
     </pre>
 </div>

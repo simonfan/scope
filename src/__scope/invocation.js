@@ -8,24 +8,6 @@ define(function (require, exports, module) {
 
 	var _ = require('lodash');
 
-	/*
-
-		var arch = scope({
-
-		});
-
-		arch.fn('alert', function (contextualMessage, msg) {
-			return 'DANGER! ' + contextualMessage + ' ' + msg;
-		}, ['message']);
-
-
-		arch.message = 'some message';
-
-		arch.alert();					// 'DANGER! some message'
-		arch.alert('More messages')		// 'DANGER! some message More messages'
-
-	*/
-
 	/**
 	 * Invoke any function with the arguments and an optional context.
 	 *
@@ -47,6 +29,15 @@ define(function (require, exports, module) {
 		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
+	/**
+	 * Creates a function that will have the first arguments
+	 * bound to the scope.
+	 *
+	 * @method partial
+	 * @param  {Function} fn        [description]
+	 * @param  {Array|Object|RegExp|String}   scopeArgs [description]
+	 * @return {Function}             [description]
+	 */
 	exports.partial = function partial(fn, scopeArgs) {
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
@@ -70,3 +61,22 @@ define(function (require, exports, module) {
 		return fn;
 	};
 });
+
+
+	/*
+
+		var arch = scope({
+
+		});
+
+		arch.fn('alert', function (contextualMessage, msg) {
+			return 'DANGER! ' + contextualMessage + ' ' + msg;
+		}, ['message']);
+
+
+		arch.message = 'some message';
+
+		arch.alert();					// 'DANGER! some message'
+		arch.alert('More messages')		// 'DANGER! some message More messages'
+
+	*/

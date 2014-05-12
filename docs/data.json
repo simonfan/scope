@@ -67,7 +67,47 @@
         {
             "file": "src/__scope/evaluation/string/index.js",
             "line": 14,
-            "description": "[evaluate description]",
+            "itemtype": "method",
+            "name": "evaluate",
+            "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "criterion",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "type",
+                    "description": "Describes the evaluator to be used",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "",
+                    "type": "*"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Objects"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "Object|Array|*"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/string/index.js",
+            "line": 47,
+            "description": "Evaluates an object criteria\n\nPERHAPS SHOULD MERGE WITH OBJECT EVALUATOR",
+            "itemtype": "method",
+            "name": "evaluateObject",
             "params": [
                 {
                     "name": "scope",
@@ -75,7 +115,7 @@
                     "type": "[type]"
                 },
                 {
-                    "name": "criterion",
+                    "name": "criteria",
                     "description": "",
                     "type": "[type]"
                 },
@@ -99,7 +139,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 60,
+            "line": 62,
             "description": "The string that will match out the type and effective value.",
             "itemtype": "property",
             "name": "valueMatcherString",
@@ -108,13 +148,13 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 81,
+            "line": 85,
             "description": "(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
             "class": ""
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 97,
+            "line": 101,
             "itemtype": "property",
             "name": "objectValueMatcherString",
             "type": "{String}",
@@ -122,7 +162,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 113,
+            "line": 119,
             "description": "Parses a string that represents an object",
             "itemtype": "method",
             "name": "parseObjectString",
@@ -141,7 +181,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 159,
+            "line": 165,
             "description": "Parses a string that represents an arrray.",
             "params": [
                 {
@@ -302,7 +342,7 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 29,
+            "line": 11,
             "description": "Invoke any function with the arguments and an optional context.",
             "itemtype": "method",
             "name": "invoke",
@@ -328,7 +368,31 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 54,
+            "line": 32,
+            "description": "Creates a function that will have the first arguments\nbound to the scope.",
+            "itemtype": "method",
+            "name": "partial",
+            "params": [
+                {
+                    "name": "fn",
+                    "description": "[description]",
+                    "type": "Function"
+                },
+                {
+                    "name": "scopeArgs",
+                    "description": "[description]",
+                    "type": "Array|Object|RegExp|String"
+                }
+            ],
+            "return": {
+                "description": "[description]",
+                "type": "Function"
+            },
+            "class": ""
+        },
+        {
+            "file": "src/__scope/invocation.js",
+            "line": 45,
             "description": "Define/get a scope-aware function",
             "params": [
                 {
@@ -397,24 +461,99 @@
                 }
             ],
             "class": ""
+        },
+        {
+            "file": "src/index.js",
+            "line": 28,
+            "description": "Assign initial data with descriptor.\nThat's all. :)",
+            "itemtype": "method",
+            "name": "initialize",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "[description]",
+                    "type": "Object"
+                },
+                {
+                    "name": "descriptor",
+                    "description": "[description]",
+                    "type": "Object"
+                }
+            ],
+            "class": "",
+            "module": "scope"
+        },
+        {
+            "file": "src/index.js",
+            "line": 45,
+            "description": "Creates a subscope that prototypically inherits from this object.",
+            "itemtype": "method",
+            "name": "create",
+            "params": [
+                {
+                    "name": "data",
+                    "description": "[description]",
+                    "type": "Object"
+                },
+                {
+                    "name": "descriptor",
+                    "description": "[description]",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "[description]",
+                "type": "Object"
+            },
+            "class": "",
+            "module": "scope"
+        },
+        {
+            "file": "src/index.js",
+            "line": 64,
+            "description": "Assigns values to the scope object.",
+            "itemtype": "method",
+            "name": "assign",
+            "params": [
+                {
+                    "name": "data|key",
+                    "description": "",
+                    "type": "Object|String",
+                    "optional": true
+                },
+                {
+                    "name": "descriptor|value",
+                    "description": "",
+                    "type": "Object|*",
+                    "optional": true
+                },
+                {
+                    "name": "descriptor",
+                    "description": "",
+                    "type": "Null|Object",
+                    "optional": true
+                }
+            ],
+            "return": {
+                "description": "[this]",
+                "type": "Object"
+            },
+            "class": "",
+            "module": "scope"
         }
     ],
     "warnings": [
-        {
-            "message": "Missing item type\n[evaluate description]",
-            "line": " src/__scope/evaluation/string/index.js:14"
-        },
         {
             "message": "Missing item type\nParses out the result from a match result.\n\nCounts on a pattern of captures,\nthat are defined in the valueMatcherString",
             "line": " src/__scope/evaluation/string/parse.js:12"
         },
         {
             "message": "Missing item type\n(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
-            "line": " src/__scope/evaluation/string/parse.js:81"
+            "line": " src/__scope/evaluation/string/parse.js:85"
         },
         {
             "message": "Missing item type\nParses a string that represents an arrray.",
-            "line": " src/__scope/evaluation/string/parse.js:159"
+            "line": " src/__scope/evaluation/string/parse.js:165"
         },
         {
             "message": "Missing item type\nThe public method. Just chooses the right method to run\nbased on arguments and options",
@@ -422,7 +561,7 @@
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",
-            "line": " src/__scope/invocation.js:54"
+            "line": " src/__scope/invocation.js:45"
         },
         {
             "message": "Missing item type\nFor in",

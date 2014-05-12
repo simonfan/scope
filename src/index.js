@@ -25,8 +25,16 @@ define(function (require, exports, module) {
 
 	var scope = module.exports = subject({
 
+		/**
+		 * Assign initial data with descriptor.
+		 * That's all. :)
+		 *
+		 * @method initialize
+		 * @param  {Object} data       [description]
+		 * @param  {Object} descriptor [description]
+		 */
 		initialize: function initializeScope(data, descriptor) {
-			subject.assign(this, data, descriptor);
+			this.assign(data, descriptor);
 		},
 
 	}, nonEnum);
@@ -34,6 +42,14 @@ define(function (require, exports, module) {
 	// set to unwritable
 	scope.proto({
 
+		/**
+		 * Creates a subscope that prototypically inherits from this object.
+		 *
+		 * @method create
+		 * @param  {Object} data       [description]
+		 * @param  {Object} descriptor [description]
+		 * @return {Object}            [description]
+		 */
 		create: function create(data, descriptor) {
 
 			// create the subscope
@@ -45,12 +61,37 @@ define(function (require, exports, module) {
 			return subscope;
 		},
 
-		assign: function assign(key, value) {
-			if (_.isString(key)) {
-				this[key] = value;
-			} else if (_.isObject(key)) {
-				_.assign(this, key);
+		/**
+		 * Assigns values to the scope object.
+		 *
+		 * @method assign
+		 * @param {Object|String} [data|key]
+		 * @param {Object|*} [descriptor|value]
+		 * @param {null|Object} [descriptor]
+		 * @return {Object} [this]
+		 */
+		assign: function assign() {
+
+			var data, descriptor;
+
+
+			if (_.isString(arguments[0])) {
+				// arguments = [key, value, descriptor]
+
+				data       = ({})[arguments[0]] = arguments[1];
+				descriptor = arguments[2];
+
+			} else if (_.isObject(arguments[0])) {
+				// arguments = [data, descriptor]
+
+				data       = arguments[0];
+				descriptor = arguments[1];
 			}
+
+			// assign using subject assign helper
+			// as it accepts a descriptor object
+
+			subject.assign(this, data, descriptor);
 
 			return this;
 		},
@@ -60,7 +101,10 @@ define(function (require, exports, module) {
 
 	// proto
 	scope
-		.assignProto(require('./__scope/iteration'), nonEnumWrite)
-		.assignProto(require('./__scope/evaluation/index'), nonEnumWrite)
-		.assignProto(require('./__scope/invocation'), nonEnumWrite);
+		// each, eachOwn
+		.assignProto(require('./__scope/iteration'), nonEnumWrite)		// non evaluation, non writable
+		// evaluate
+		.assignProto(require('./__scope/evaluation/index'), nonEnum)	// non enumerable, but WRITABLE
+		// invoke, partial, fn
+		.assignProto(require('./__scope/invocation'), nonEnum);			// non enumerable, but WRITABLE
 });

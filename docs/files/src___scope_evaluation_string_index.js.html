@@ -100,11 +100,13 @@ define(function (require, exports, module) {
 
 
 	/**
-	 * [evaluate description]
-	 * @param  {[type]} scope
-	 * @param  {[type]} criterion
-	 * @param  {[type]} options
-	 * @return {[type]}
+	 * @method evaluate
+	 * @param  {Object} scope
+	 * @param  {Object} criterion
+	 *     @param {String} type Describes the evaluator to be used
+	 *     @param {*} value
+	 * @param  {Objects} options
+	 * @return {Object|Array|*}
 	 */
 	function evaluate(scope, criterion, options) {
 
@@ -130,7 +132,17 @@ define(function (require, exports, module) {
 		return res;
 	}
 
-
+	/**
+	 * Evaluates an object criteria
+	 *
+	 * PERHAPS SHOULD MERGE WITH OBJECT EVALUATOR
+	 *
+	 * @method evaluateObject
+	 * @param  {[type]} scope
+	 * @param  {[type]} criteria
+	 * @param  {[type]} options
+	 * @return {[type]}
+	 */
 	function evaluateObject(scope, criteria, options) {
 		var res = {};
 
@@ -162,7 +174,7 @@ define(function (require, exports, module) {
 
 		return evaluate(scope, criteria, options);
 
-	};
+	}
 
 
 	module.exports = evaluateValueString;

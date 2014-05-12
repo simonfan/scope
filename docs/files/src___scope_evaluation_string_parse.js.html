@@ -143,7 +143,9 @@ define(function (require, exports, module) {
 		}
 
 		return res;
-	};
+	}
+
+
 
 	/**
 	 * The string that will match out the type and effective value.
@@ -151,6 +153,7 @@ define(function (require, exports, module) {
 	 * @property valueMatcherString
 	 * @type RegExp
 	 */
+	/* jshint ignore:start */
 	var whitespace = &#x27;\\s*&#x27;,
 		literal    = &#x27;(\\w+)&#x27;,
 		evaluated  = &#x27;\\$(\\w+)&#x27;,
@@ -165,6 +168,7 @@ define(function (require, exports, module) {
 			object,
 		&#x27;)&#x27; + whitespace
 	].join(&#x27;&#x27;);
+	/* jshint ignore:end */
 
 	/**
 	 * (\w+) LITERAL
@@ -179,7 +183,7 @@ define(function (require, exports, module) {
 			match = str.match(valueMatcher);
 
 		return evaluateValueMatch(match);
-	};
+	}
 
 
 	/**
@@ -187,6 +191,7 @@ define(function (require, exports, module) {
 	 * @property objectValueMatcherString
 	 * @type {String}
 	 */
+	/* jshint ignore:start */
 	var objectValueMatcherString = [
 		whitespace + &#x27;(?:&#x27;,
 			evaluated + whitespace + &#x27;(?:,|$)|&#x27;,
@@ -197,6 +202,7 @@ define(function (require, exports, module) {
 			&#x27;)&#x27;,
 		&#x27;)&#x27;
 	].join(&#x27;&#x27;);
+	/* jshint ignore:end */
 
 	/**
 	 * Parses a string that represents an object

@@ -1,4 +1,11 @@
 list of tasks:
-	☐	Jshint
+	✔	Jshint @done (14-05-11 21:23)
 	☐	Merge evaluators
-	✔ Docs @done (14-05-11 18:58)
+		It is impossible, because the string evaluator has to take
+		into consideration the "literal" type, which
+		is not the case of the other evaluators.
+	☐	Make literal evaluations possible for
+		☐	arrays
+		☐	objects
+		☐	regeular expressions
+	✔ 	Docs @done (14-05-11 18:58)
