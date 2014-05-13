@@ -613,7 +613,14 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	exports.invoke = function invoke(fn, scopeArgs /*, arg, arg, ... */) {
 
 		// [0] get fn
-		fn = _.isFunction(fn) ? fn : this[fn];
+		if (_.isString(fn)) {
+			var fnName = fn;
+			fn = this[fnName];
+
+			if (!fn) {
+				throw new Error(fnName + ' not defined.');
+			}
+		}
 
 		// [1] get scopeArgs\
 		var args = this.evaluate(scopeArgs);
@@ -633,6 +640,10 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	 * @return {Function}             [description]
 	 */
 	exports.partial = function partial(fn, scopeArgs) {
+
+		// scopeArgs defaults to empty array
+		scopeArgs = scopeArgs || [];
+
 		return _.partial(this.invoke, fn, scopeArgs);
 	};
 

@@ -1,7 +1,7 @@
 {
 	"name": "scope",
 	"main": "built/scope.js",
-	"version": "0.4.3",
+	"version": "0.4.4",
 	"description": "Some module...",
 	"dependencies": {
 		"lodash": "~2.4.1",
