@@ -620,7 +620,7 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 		args = _.isArray(args) ? args : [args];
 
 		// [2] invoke
-		return fn.apply(null, args.concat(Array.prototype.slice.call(arguments, 2)));
+		return fn.apply(this, args.concat(Array.prototype.slice.call(arguments, 2)));
 	};
 
 	/**
@@ -646,13 +646,20 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	 */
 	exports.fn = function scopeFn(name, fn, scopeArgs) {
 
-		if (arguments.length === 1) {
-			return this[name];
+		if (_.isObject(arguments[0])) {
+			// arguments = [{ fnName: { fn: fn, args: scopeArgs }}]
+			_.each(arguments[0], function (fnData, fnName) {
+
+				this.fn(fnName, fnData.fn, fnData.args);
+
+			}, this);
+
 		} else {
-			this[name] = this.partial(fn, scopeArgs);
+			// arguments = [fnName, fn, scopeArgs]
+			this[arguments[0]] = this.partial(arguments[1], arguments[2]);
 		}
 
-		return fn;
+		return this;
 	};
 });
 
