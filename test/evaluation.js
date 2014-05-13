@@ -96,9 +96,9 @@
 
 
 
-			this.local1.evaluate('[literal, $v1, { key: { $v2, key2: { $v3 } } }]')
+			this.local1.evaluate('[literal/path.js, $v1, { key: { $v2, key2: { $v3 } } }]')
 				.should.eql([
-					'literal',
+					'literal/path.js',
 					'g11',
 					{
 						key: {

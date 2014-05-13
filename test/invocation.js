@@ -137,5 +137,25 @@
 			// check that the defined method is a patialized one.
 			global2.nonSenseString('more', 'non', 'sense').should.eql('global2-g24-g22-more-non-sense');
 		});
+
+		it('fn(name, fn, "arguments string")', function () {
+
+			var local1 = this.local1;
+
+
+			function joinStrings() {
+				return Array.prototype.join.call(arguments, '-');
+			}
+
+
+			// define fn
+			local1.fn('nonSenseString', joinStrings, '[ first, $v4, $v1 ]');
+
+			// run the method
+			local1.nonSenseString().should.eql('first-l14-g11');
+			// with more arguments
+			local1.nonSenseString('another', 'string').should.eql('first-l14-g11-another-string');
+
+		})
 	});
 });

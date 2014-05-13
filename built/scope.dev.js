@@ -168,7 +168,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	 */
 	/* jshint ignore:start */
 	var whitespace = '\\s*',
-		literal    = '(\\w+)',
+		literal    = '([^$[{]+)',
 		evaluated  = '\\$(\\w+)',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';

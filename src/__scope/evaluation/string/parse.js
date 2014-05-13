@@ -67,7 +67,7 @@ define(function (require, exports, module) {
 	 */
 	/* jshint ignore:start */
 	var whitespace = '\\s*',
-		literal    = '(\\w+)',
+		literal    = '([^$[{]+)',
 		evaluated  = '\\$(\\w+)',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
