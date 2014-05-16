@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__scope/evaluation/index.js - scope</title>
+    <title>src/__scope/evaluation/array.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,7 +82,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__scope/evaluation/index.js</h1>
+                        <h1 class="file-heading">File: src/__scope/evaluation/array.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -95,45 +95,108 @@ define(function (require, exports, module) {
 
 
 	var _ = require(&#x27;lodash&#x27;);
+	/**
+	 * Picks the properties defined by the array
+	 * and returns them in an object hash.
+	 *
+	 * @method evaluateArrayToObject
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
+	function evaluateArrayToObject(scope, criteria, options) {
+		var res = {};
 
+		if (options.own) {
 
-	var evaluateString = require(&#x27;./string/index&#x27;),
-		evaluateArray  = require(&#x27;./array&#x27;),
-		evaluateObject = require(&#x27;./object&#x27;),
-		evaluateRegExp = require(&#x27;./regexp&#x27;);
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion) &amp;&amp; scope.hasOwnProperty(criterion)) {
+					// criterion = &#x27;prop&#x27;;
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluateOwn(criterion, options);
+				}
+			});
+
+		} else {
+
+			_.each(criteria, function (criterion) {
+				if (_.isString(criterion)) {
+					// criterion = &#x27;prop&#x27;;
+					res[criterion] = scope[criterion];
+				} else {
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					res[criterion] = scope.evaluate(criterion, options);
+				}
+			});
+		}
+
+		return res;
+	}
 
 	/**
-	 * The public method. Just chooses the right method to run
-	 * based on arguments and options
+	 * Picks the properties defined in the criteria array
+	 * and returns an array with the values in the required order.
 	 *
-	 * @param {Array|Object|Regexp|String} criteria
-	 * @param options {Object}
-	 *     @param own {Boolean}
-	 *     @param format {String}
+	 * @method evaluateArrayToArray
+	 * @param  {Object} scope
+	 * @param  {Array} criteria
+	 * @param  {Object} options
+	 * @return {Array}
 	 */
-	exports.evaluate = function evaluate(criteria, options) {
+	function evaluateArrayToArray(scope, criteria, options) {
 
-		options = options || {};
+		if (options.own) {
 
-		if (_.isArray(criteria)) {
+			return _.map(criteria, function (criterion) {
 
-			return evaluateArray(this, criteria, options);
+				return (_.isString(criterion) &amp;&amp; scope.hasOwnProperty(criterion)) ?
+					// criterion = &#x27;prop&#x27;;
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluateOwn(criterion, options);
+			});
 
-		} else if (_.isRegExp(criteria)) {
+		} else {
 
-			return evaluateRegExp(this, criteria, options);
+			return _.map(criteria, function (criterion) {
+				return _.isString(criterion) ?
+					// criterion = &#x27;prop&#x27;;
+					scope[criterion] :
+					// criterion = subCriteria ([]|{})
+					// subevaluate.
+					scope.evaluate(criterion, options);
+			});
 
-
-		} else if (_.isObject(criteria)) {
-			// return object
-
-			return evaluateObject(this, criteria, options);
-
-		} else if (_.isString(criteria)) {
-
-			return evaluateString(this, criteria, options);
 		}
-	};
+	}
+
+
+	/**
+	 * The interface.
+	 *
+	 * @param  {[type]} scope    [description]
+	 * @param  {[type]} criteria [description]
+	 * @param  {[type]} options  [description]
+	 * @return {[type]}          [description]
+	 */
+	module.exports = function evaluateArray(scope, criteria, options) {
+
+		if (options &amp;&amp; options.format === &#x27;object&#x27;) {
+
+			// array -&gt; object
+			return evaluateArrayToObject(scope, criteria, options);
+
+		} else {
+			// array -&gt; array
+			return evaluateArrayToArray(scope, criteria, options);
+		}
+	}
 
 });
 

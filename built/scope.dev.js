@@ -386,15 +386,11 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 
 /* jshint ignore:end */
 
-define('__scope/evaluation/index',['require','exports','module','lodash','./string/index'],function (require, exports, module) {
+define('__scope/evaluation/array',['require','exports','module','lodash'],function (require, exports, module) {
 	
 
 
 	var _ = require('lodash');
-
-
-	var evaluateString = require('./string/index');
-
 	/**
 	 * Picks the properties defined by the array
 	 * and returns them in an object hash.
@@ -476,6 +472,89 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 		}
 	}
 
+
+	/**
+	 * The interface.
+	 *
+	 * @param  {[type]} scope    [description]
+	 * @param  {[type]} criteria [description]
+	 * @param  {[type]} options  [description]
+	 * @return {[type]}          [description]
+	 */
+	module.exports = function evaluateArray(scope, criteria, options) {
+
+		if (options && options.format === 'object') {
+
+			// array -> object
+			return evaluateArrayToObject(scope, criteria, options);
+
+		} else {
+			// array -> array
+			return evaluateArrayToArray(scope, criteria, options);
+		}
+	}
+
+});
+
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
+define('__scope/evaluation/object',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+
+	var _ = require('lodash');
+
+	/**
+	 * Picks the properties defined on the criteria object
+	 * from the scope and sets defaults.
+	 *
+	 * @method evaluateObject
+	 * @param  {Object} scope
+	 * @param  {Object} criteria
+	 * @param  {Object} options
+	 * @return {Object}
+	 */
+	module.exports = function evaluateObject(scope, criteria, options) {
+		var res = {};
+
+		if (options.own) {
+			_.each(criteria, function (value, prop) {
+
+				if (scope.hasOwnProperty(prop)) {
+					res[prop] = scope[prop];
+				}
+
+			});
+
+		} else {
+
+			_.each(criteria, function (value, prop) {
+				res[prop] = scope[prop];
+			});
+
+		}
+
+		// set defaults
+		_.defaults(res, criteria);
+
+		return res;
+	};
+
+});
+
+/* jshint ignore:start */
+
+/* jshint ignore:end */
+
+define('__scope/evaluation/regexp',['require','exports','module','lodash'],function (require, exports, module) {
+	
+
+
+	var _ = require('lodash');
+
+
 	/**
 	 * Loops through scope properties and picks
 	 * those that match the regular expression criteria.
@@ -486,7 +565,7 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 	 * @param  {Object} options
 	 * @return {Object}
 	 */
-	function evaluateRegExp(scope, criteria, options) {
+	module.exports = function evaluateRegExp(scope, criteria, options) {
 		// response always in object format
 		var res = {};
 
@@ -511,43 +590,25 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 		}
 
 		return res;
-	}
+	};
 
-	/**
-	 * Picks the properties defined on the criteria object
-	 * from the scope and sets defaults.
-	 *
-	 * @method evaluateObject
-	 * @param  {Object} scope
-	 * @param  {Object} criteria
-	 * @param  {Object} options
-	 * @return {Object}
-	 */
-	function evaluateObject(scope, criteria, options) {
-		var res = {};
+});
 
-		if (options.own) {
-			_.each(criteria, function (value, prop) {
+/* jshint ignore:start */
 
-				if (scope.hasOwnProperty(prop)) {
-					res[prop] = scope[prop];
-				}
+/* jshint ignore:end */
 
-			});
+define('__scope/evaluation/index',['require','exports','module','lodash','./string/index','./array','./object','./regexp'],function (require, exports, module) {
+	
 
-		} else {
 
-			_.each(criteria, function (value, prop) {
-				res[prop] = scope[prop];
-			});
+	var _ = require('lodash');
 
-		}
 
-		// set defaults
-		_.defaults(res, criteria);
-
-		return res;
-	}
+	var evaluateString = require('./string/index'),
+		evaluateArray  = require('./array'),
+		evaluateObject = require('./object'),
+		evaluateRegExp = require('./regexp');
 
 	/**
 	 * The public method. Just chooses the right method to run
@@ -564,15 +625,7 @@ define('__scope/evaluation/index',['require','exports','module','lodash','./stri
 
 		if (_.isArray(criteria)) {
 
-			if (options && options.format === 'object') {
-
-				// array -> object
-				return evaluateArrayToObject(this, criteria, options);
-
-			} else {
-				// array -> array
-				return evaluateArrayToArray(this, criteria, options);
-			}
+			return evaluateArray(this, criteria, options);
 
 		} else if (_.isRegExp(criteria)) {
 

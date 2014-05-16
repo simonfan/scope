@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>src/__scope/evaluation/index.js - scope</title>
+    <title>src/__scope/evaluation/regexp.js - scope</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -82,7 +82,7 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-                        <h1 class="file-heading">File: src/__scope/evaluation/index.js</h1>
+                        <h1 class="file-heading">File: src/__scope/evaluation/regexp.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
@@ -97,42 +97,41 @@ define(function (require, exports, module) {
 	var _ = require(&#x27;lodash&#x27;);
 
 
-	var evaluateString = require(&#x27;./string/index&#x27;),
-		evaluateArray  = require(&#x27;./array&#x27;),
-		evaluateObject = require(&#x27;./object&#x27;),
-		evaluateRegExp = require(&#x27;./regexp&#x27;);
-
 	/**
-	 * The public method. Just chooses the right method to run
-	 * based on arguments and options
+	 * Loops through scope properties and picks
+	 * those that match the regular expression criteria.
 	 *
-	 * @param {Array|Object|Regexp|String} criteria
-	 * @param options {Object}
-	 *     @param own {Boolean}
-	 *     @param format {String}
+	 * @method evaluateRegExp
+	 * @param  {Object} scope
+	 * @param  {RegExp} criteria
+	 * @param  {Object} options
+	 * @return {Object}
 	 */
-	exports.evaluate = function evaluate(criteria, options) {
+	module.exports = function evaluateRegExp(scope, criteria, options) {
+		// response always in object format
+		var res = {};
 
-		options = options || {};
+		if (options.own) {
 
-		if (_.isArray(criteria)) {
+			// loop own
+			scope.eachOwn(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
 
-			return evaluateArray(this, criteria, options);
+		} else {
 
-		} else if (_.isRegExp(criteria)) {
+			// loop everything
+			scope.each(function (value, prop) {
+				if (criteria.test(prop)) {
+					res[prop] = value;
+				}
+			});
 
-			return evaluateRegExp(this, criteria, options);
-
-
-		} else if (_.isObject(criteria)) {
-			// return object
-
-			return evaluateObject(this, criteria, options);
-
-		} else if (_.isString(criteria)) {
-
-			return evaluateString(this, criteria, options);
 		}
+
+		return res;
 	};
 
 });

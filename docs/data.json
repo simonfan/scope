@@ -18,8 +18,29 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/__scope/evaluation/array.js": {
+            "name": "src/__scope/evaluation/array.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/__scope/evaluation/index.js": {
             "name": "src/__scope/evaluation/index.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/evaluation/object.js": {
+            "name": "src/__scope/evaluation/object.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/__scope/evaluation/regexp.js": {
+            "name": "src/__scope/evaluation/regexp.js",
             "modules": {},
             "classes": {},
             "fors": {},
@@ -197,8 +218,8 @@
             "class": ""
         },
         {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 14,
+            "file": "src/__scope/evaluation/array.js",
+            "line": 10,
             "description": "Picks the properties defined by the array\nand returns them in an object hash.",
             "itemtype": "method",
             "name": "evaluateArrayToObject",
@@ -226,8 +247,8 @@
             "class": ""
         },
         {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 57,
+            "file": "src/__scope/evaluation/array.js",
+            "line": 53,
             "description": "Picks the properties defined in the criteria array\nand returns an array with the values in the required order.",
             "itemtype": "method",
             "name": "evaluateArrayToArray",
@@ -255,37 +276,63 @@
             "class": ""
         },
         {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 95,
-            "description": "Loops through scope properties and picks\nthose that match the regular expression criteria.",
-            "itemtype": "method",
-            "name": "evaluateRegExp",
+            "file": "src/__scope/evaluation/array.js",
+            "line": 92,
+            "description": "The interface.",
             "params": [
                 {
                     "name": "scope",
-                    "description": "",
-                    "type": "Object"
+                    "description": "[description]",
+                    "type": "[type]"
                 },
                 {
                     "name": "criteria",
-                    "description": "",
-                    "type": "RegExp"
+                    "description": "[description]",
+                    "type": "[type]"
                 },
                 {
                     "name": "options",
-                    "description": "",
-                    "type": "Object"
+                    "description": "[description]",
+                    "type": "[type]"
                 }
             ],
             "return": {
-                "description": "",
-                "type": "Object"
+                "description": "[description]",
+                "type": "[type]"
             },
             "class": ""
         },
         {
             "file": "src/__scope/evaluation/index.js",
-            "line": 132,
+            "line": 17,
+            "description": "The public method. Just chooses the right method to run\nbased on arguments and options",
+            "params": [
+                {
+                    "name": "criteria",
+                    "description": "",
+                    "type": "Array|Object|Regexp|String"
+                },
+                {
+                    "name": "options",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "own",
+                    "description": "",
+                    "type": "Boolean"
+                },
+                {
+                    "name": "format",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "class": ""
+        },
+        {
+            "file": "src/__scope/evaluation/object.js",
+            "line": 11,
             "description": "Picks the properties defined on the criteria object\nfrom the scope and sets defaults.",
             "itemtype": "method",
             "name": "evaluateObject",
@@ -313,31 +360,32 @@
             "class": ""
         },
         {
-            "file": "src/__scope/evaluation/index.js",
-            "line": 168,
-            "description": "The public method. Just chooses the right method to run\nbased on arguments and options",
+            "file": "src/__scope/evaluation/regexp.js",
+            "line": 12,
+            "description": "Loops through scope properties and picks\nthose that match the regular expression criteria.",
+            "itemtype": "method",
+            "name": "evaluateRegExp",
             "params": [
+                {
+                    "name": "scope",
+                    "description": "",
+                    "type": "Object"
+                },
                 {
                     "name": "criteria",
                     "description": "",
-                    "type": "Array|Object|Regexp|String"
+                    "type": "RegExp"
                 },
                 {
                     "name": "options",
                     "description": "",
                     "type": "Object"
-                },
-                {
-                    "name": "own",
-                    "description": "",
-                    "type": "Boolean"
-                },
-                {
-                    "name": "format",
-                    "description": "",
-                    "type": "String"
                 }
             ],
+            "return": {
+                "description": "",
+                "type": "Object"
+            },
             "class": ""
         },
         {
@@ -556,8 +604,12 @@
             "line": " src/__scope/evaluation/string/parse.js:165"
         },
         {
+            "message": "Missing item type\nThe interface.",
+            "line": " src/__scope/evaluation/array.js:92"
+        },
+        {
             "message": "Missing item type\nThe public method. Just chooses the right method to run\nbased on arguments and options",
-            "line": " src/__scope/evaluation/index.js:168"
+            "line": " src/__scope/evaluation/index.js:17"
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",
