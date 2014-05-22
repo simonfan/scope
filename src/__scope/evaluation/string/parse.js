@@ -67,7 +67,9 @@ define(function (require, exports, module) {
 	 */
 	/* jshint ignore:start */
 	var whitespace = '\\s*',
-		literal    = '([^$[{]+)',
+		// no brackets([), braces({), nor commas(,)
+		// are allowed in literal values
+		literal    = '([^$[{,]+)',
 		evaluated  = '\\$(\\w+)',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';

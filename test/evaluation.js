@@ -131,6 +131,11 @@
 
 		});
 
+		it("literal only string array", function () {
+			this.local1.evaluate('[literal1, literal2, literal3]')
+				.should.eql(['literal1', 'literal2', 'literal3']);
+		});
+
 
 		it("deep string aray", function () {
 

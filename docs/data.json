@@ -169,13 +169,13 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 85,
+            "line": 87,
             "description": "(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
             "class": ""
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 101,
+            "line": 103,
             "itemtype": "property",
             "name": "objectValueMatcherString",
             "type": "{String}",
@@ -183,7 +183,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 119,
+            "line": 121,
             "description": "Parses a string that represents an object",
             "itemtype": "method",
             "name": "parseObjectString",
@@ -202,7 +202,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 165,
+            "line": 167,
             "description": "Parses a string that represents an arrray.",
             "params": [
                 {
@@ -597,11 +597,11 @@
         },
         {
             "message": "Missing item type\n(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
-            "line": " src/__scope/evaluation/string/parse.js:85"
+            "line": " src/__scope/evaluation/string/parse.js:87"
         },
         {
             "message": "Missing item type\nParses a string that represents an arrray.",
-            "line": " src/__scope/evaluation/string/parse.js:165"
+            "line": " src/__scope/evaluation/string/parse.js:167"
         },
         {
             "message": "Missing item type\nThe interface.",
