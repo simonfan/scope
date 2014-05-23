@@ -6,7 +6,8 @@ define(function (require, exports, module) {
 	'use strict';
 
 
-	var _ = require('lodash');
+	var _    = require('lodash'),
+		deep = require('deep');
 
 	var parseArgumentsStr = require('./parse');
 
@@ -29,7 +30,8 @@ define(function (require, exports, module) {
 			res = criterion.value;
 		} else if (criterion.type === 'evaluated') {
 			// evaluated
-			res = scope[criterion.value];
+			res = deep.get(scope, criterion.value);
+
 		} else if (criterion.type === 'array') {
 
 			// array

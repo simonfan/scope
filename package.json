@@ -1,7 +1,7 @@
 {
   "name": "scope",
   "main": "./src",
-  "version": "0.4.5",
+  "version": "0.5.5",
   "description": "Some module...",
   "repository": {
     "type": "git",
@@ -10,7 +10,8 @@
   "dependencies": {
     "amdefine": ">=0.1.0",
     "lodash": "~2.4.1",
-    "subject": "~0.5.5"
+    "subject": "~0.5.8",
+    "deep": "git://github.com/simonfan/deep.git"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

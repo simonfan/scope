@@ -87,7 +87,7 @@
     "classitems": [
         {
             "file": "src/__scope/evaluation/string/index.js",
-            "line": 14,
+            "line": 15,
             "itemtype": "method",
             "name": "evaluate",
             "params": [
@@ -125,7 +125,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/index.js",
-            "line": 47,
+            "line": 49,
             "description": "Evaluates an object criteria\n\nPERHAPS SHOULD MERGE WITH OBJECT EVALUATOR",
             "itemtype": "method",
             "name": "evaluateObject",
@@ -170,7 +170,7 @@
         {
             "file": "src/__scope/evaluation/string/parse.js",
             "line": 87,
-            "description": "(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
+            "description": "(\\w+) LITERAL\n\\$([^,]) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
             "class": ""
         },
         {
@@ -596,7 +596,7 @@
             "line": " src/__scope/evaluation/string/parse.js:12"
         },
         {
-            "message": "Missing item type\n(\\w+) LITERAL\n\\$(\\W+) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
+            "message": "Missing item type\n(\\w+) LITERAL\n\\$([^,]) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
             "line": " src/__scope/evaluation/string/parse.js:87"
         },
         {

@@ -35,8 +35,8 @@ define(function (require, exports, module) {
 		} else if (match[2]) {
 			// EVALUATED
 		//	console.log('EVALUATED: ' + match[2]);
-			res.type  = 'evaluated';
-			res.value = match[2];
+			res.type     = 'evaluated';
+			res.value    = match[2];
 
 
 		} else if (match[3]) {
@@ -70,7 +70,7 @@ define(function (require, exports, module) {
 		// no brackets([), braces({), nor commas(,)
 		// are allowed in literal values
 		literal    = '([^$[{,]+)',
-		evaluated  = '\\$(\\w+)',
+		evaluated  = '\\$([^,]+)?',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
 
@@ -86,7 +86,7 @@ define(function (require, exports, module) {
 
 	/**
 	 * (\w+) LITERAL
-	 * \$(\W+) EVALUATED
+	 * \$([^,]) EVALUATED
 	 * \[\s*(.*?)\s*\] ARRAY
 	 * \{\s*(.*?)\s*\} OBJECT
 	 */
@@ -144,8 +144,8 @@ define(function (require, exports, module) {
 				// key & evaluated value
 
 				res[objectValueMatch[1]] = {
-					type: 'evaluated',
-					value: objectValueMatch[1]
+					type : 'evaluated',
+					value: objectValueMatch[1],
 				};
 
 			} else if (objectValueMatch[2]) {

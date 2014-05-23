@@ -94,7 +94,8 @@ define(function (require, exports, module) {
 	&#x27;use strict&#x27;;
 
 
-	var _ = require(&#x27;lodash&#x27;);
+	var _    = require(&#x27;lodash&#x27;),
+		deep = require(&#x27;deep&#x27;);
 
 	var parseArgumentsStr = require(&#x27;./parse&#x27;);
 
@@ -117,7 +118,8 @@ define(function (require, exports, module) {
 			res = criterion.value;
 		} else if (criterion.type === &#x27;evaluated&#x27;) {
 			// evaluated
-			res = scope[criterion.value];
+			res = deep.get(scope, criterion.value);
+
 		} else if (criterion.type === &#x27;array&#x27;) {
 
 			// array

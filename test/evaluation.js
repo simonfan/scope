@@ -41,6 +41,12 @@
 				id: 'local1',
 				v2: 'l12',
 				v4: 'l14',
+				v5: {
+					property: 'immediate-value',
+					deep: {
+						property: 'deep-value'
+					}
+				}
 			});
 		});
 
@@ -96,8 +102,11 @@
 
 
 
-			this.local1.evaluate('[literal/path.js, $v1, { key: { $v2, key2: { $v3 } } }]')
-				.should.eql([
+			var data = this.local1.evaluate('[literal/path.js, $v1, { key: { $v2, key2: { $v3 } } }]');
+
+		//	console.log(data);
+
+			data.should.eql([
 					'literal/path.js',
 					'g11',
 					{
@@ -148,6 +157,28 @@
 					]
 				]);
 
+		});
+
+		it('evaluate deep properties', function () {
+
+			this.local1.evaluate('$v5.property')
+				.should.eql('immediate-value');
+
+			this.local1.evaluate('$v5.deep.property')
+				.should.eql('deep-value');
+
+		});
+
+		it('evaluate deep properties within objects', function () {
+
+			this.local1.evaluate('{ $v5.deep.property, someValue: $v5.property }')
+				.should.eql({
+					'v5.deep.property': 'deep-value',
+					someValue: 'immediate-value'
+				});
+
+			this.local1.evaluate('[ $v5.deep.property, $v5.property ]')
+				.should.eql(['deep-value', 'immediate-value'])
 		});
 
 
