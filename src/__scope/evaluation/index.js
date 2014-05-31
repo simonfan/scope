@@ -43,7 +43,12 @@ define(function (require, exports, module) {
 
 		} else if (_.isString(criteria)) {
 
+			// parse the string
 			return evaluateString(this, criteria, options);
+
+		} else {
+			// otherwise, just return the value itself
+			return criteria;
 		}
 	};
 

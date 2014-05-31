@@ -106,14 +106,17 @@ define(function (require, exports, module) {
 	 */
 	exports.invoke = function invoke(fn, scopeArgs /*, arg, arg, ... */) {
 
+		var fnName = fn;
+
 		// [0] get fn
 		if (_.isString(fn)) {
-			var fnName = fn;
 			fn = this[fnName];
+		}
 
-			if (!fn) {
-				throw new Error(fnName + &#x27; not defined.&#x27;);
-			}
+		if (!_.isFunction(fn)) {
+
+
+			throw new Error(&#x27;scope invoke error: fn &#x27; + fnName + &#x27; not a function.&#x27;);
 		}
 
 		// [1] get scopeArgs\

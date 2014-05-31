@@ -416,7 +416,7 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 39,
+            "line": 42,
             "description": "Creates a function that will have the first arguments\nbound to the scope.",
             "itemtype": "method",
             "name": "partial",
@@ -440,7 +440,7 @@
         },
         {
             "file": "src/__scope/invocation.js",
-            "line": 56,
+            "line": 59,
             "description": "Define/get a scope-aware function",
             "params": [
                 {
@@ -613,7 +613,7 @@
         },
         {
             "message": "Missing item type\nDefine/get a scope-aware function",
-            "line": " src/__scope/invocation.js:56"
+            "line": " src/__scope/invocation.js:59"
         },
         {
             "message": "Missing item type\nFor in",

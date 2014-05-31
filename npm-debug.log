@@ -1,0 +1,287 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'node', '/home/simon/node_modules/bin/npm', 'publish' ]
+2 info using npm@1.3.13
+3 info using node@v0.10.21
+4 verbose publish [ '.' ]
+5 verbose cache add [ '.', null ]
+6 verbose cache add name=undefined spec="." args=[".",null]
+7 verbose parsed url { protocol: null,
+7 verbose parsed url   slashes: null,
+7 verbose parsed url   auth: null,
+7 verbose parsed url   host: null,
+7 verbose parsed url   port: null,
+7 verbose parsed url   hostname: null,
+7 verbose parsed url   hash: null,
+7 verbose parsed url   search: null,
+7 verbose parsed url   query: null,
+7 verbose parsed url   pathname: '.',
+7 verbose parsed url   path: '.',
+7 verbose parsed url   href: '.' }
+8 silly lockFile 3a52ce78- .
+9 verbose lock . /home/simon/.npm/3a52ce78-.lock
+10 verbose tar pack [ '/home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz',
+10 verbose tar pack   '.' ]
+11 verbose tarball /home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+12 verbose folder .
+13 info prepublish scope@0.5.5
+14 silly lockFile 1f1177db-tar tar://.
+15 verbose lock tar://. /home/simon/.npm/1f1177db-tar.lock
+16 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+17 verbose lock tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz /home/simon/.npm/6c4e53e0-20735-0-5091952702496201-tmp-tgz.lock
+18 silly lockFile 1f1177db-tar tar://.
+19 silly lockFile 1f1177db-tar tar://.
+20 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+21 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+22 verbose tar unpack /home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+23 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+24 verbose lock tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package /home/simon/.npm/b1406cb4-20735-0-5091952702496201-package.lock
+25 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+26 verbose lock tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz /home/simon/.npm/6c4e53e0-20735-0-5091952702496201-tmp-tgz.lock
+27 silly gunzTarPerm modes [ '755', '644' ]
+28 silly gunzTarPerm extractEntry package.json
+29 silly gunzTarPerm modified mode [ 'package.json', 436, 420 ]
+30 silly gunzTarPerm extractEntry .npmignore
+31 silly gunzTarPerm extractEntry README.md
+32 silly gunzTarPerm modified mode [ 'README.md', 436, 420 ]
+33 silly gunzTarPerm extractEntry Gruntfile.js
+34 silly gunzTarPerm modified mode [ 'Gruntfile.js', 436, 420 ]
+35 silly gunzTarPerm extractEntry amdconfig.js
+36 silly gunzTarPerm modified mode [ 'amdconfig.js', 436, 420 ]
+37 silly gunzTarPerm extractEntry bower.json
+38 silly gunzTarPerm modified mode [ 'bower.json', 436, 420 ]
+39 silly gunzTarPerm extractEntry TODO
+40 silly gunzTarPerm modified mode [ 'TODO', 436, 420 ]
+41 silly gunzTarPerm extractEntry .travis.yml
+42 silly gunzTarPerm extractEntry .editorconfig
+43 silly gunzTarPerm extractEntry built/scope.dev.js
+44 silly gunzTarPerm modified mode [ 'built/scope.dev.js', 436, 420 ]
+45 silly gunzTarPerm extractEntry built/scope.js
+46 silly gunzTarPerm modified mode [ 'built/scope.js', 436, 420 ]
+47 silly gunzTarPerm extractEntry demo/main.js
+48 silly gunzTarPerm modified mode [ 'demo/main.js', 436, 420 ]
+49 silly gunzTarPerm extractEntry demo/main.html
+50 silly gunzTarPerm modified mode [ 'demo/main.html', 436, 420 ]
+51 silly gunzTarPerm extractEntry docs/api.js
+52 silly gunzTarPerm modified mode [ 'docs/api.js', 436, 420 ]
+53 silly gunzTarPerm extractEntry docs/assets/css/external-small.png
+54 silly gunzTarPerm extractEntry docs/assets/css/logo.png
+55 silly gunzTarPerm extractEntry docs/assets/css/main.css
+56 silly gunzTarPerm extractEntry docs/assets/favicon.png
+57 silly gunzTarPerm extractEntry docs/assets/img/spinner.gif
+58 silly gunzTarPerm extractEntry docs/assets/index.html
+59 silly gunzTarPerm extractEntry docs/assets/js/api-filter.js
+60 silly gunzTarPerm extractEntry docs/assets/js/api-list.js
+61 silly gunzTarPerm extractEntry docs/assets/js/api-search.js
+62 silly gunzTarPerm extractEntry docs/assets/js/apidocs.js
+63 silly gunzTarPerm extractEntry docs/assets/js/yui-prettify.js
+64 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/prettify-min.js
+65 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/CHANGES.html
+66 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/COPYING
+67 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/README.html
+68 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/prettify-min.css
+69 silly gunzTarPerm extractEntry docs/classes/index.html
+70 silly gunzTarPerm modified mode [ 'docs/classes/index.html', 436, 420 ]
+71 silly gunzTarPerm extractEntry docs/data.json
+72 silly gunzTarPerm extractEntry docs/files/index.html
+73 silly gunzTarPerm modified mode [ 'docs/files/index.html', 436, 420 ]
+74 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_array.js.html
+75 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_index.js.html
+76 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_object.js.html
+77 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_regexp.js.html
+78 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_string_index.js.html
+79 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_string_parse.js.html
+80 silly gunzTarPerm extractEntry docs/files/src___scope_invocation.js.html
+81 silly gunzTarPerm extractEntry docs/files/src___scope_iteration.js.html
+82 silly gunzTarPerm extractEntry docs/files/src_index.js.html
+83 silly gunzTarPerm extractEntry docs/index.html
+84 silly gunzTarPerm extractEntry docs/modules/index.html
+85 silly gunzTarPerm modified mode [ 'docs/modules/index.html', 436, 420 ]
+86 silly gunzTarPerm extractEntry docs/modules/scope.html
+87 silly gunzTarPerm extractEntry index.html
+88 silly gunzTarPerm modified mode [ 'index.html', 436, 420 ]
+89 silly gunzTarPerm extractEntry src/index.js
+90 silly gunzTarPerm modified mode [ 'src/index.js', 436, 420 ]
+91 silly gunzTarPerm extractEntry src/__scope/invocation.js
+92 silly gunzTarPerm modified mode [ 'src/__scope/invocation.js', 436, 420 ]
+93 silly gunzTarPerm extractEntry src/__scope/iteration.js
+94 silly gunzTarPerm modified mode [ 'src/__scope/iteration.js', 436, 420 ]
+95 silly gunzTarPerm extractEntry src/__scope/evaluation/array.js
+96 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/array.js', 436, 420 ]
+97 silly gunzTarPerm extractEntry src/__scope/evaluation/index.js
+98 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/index.js', 436, 420 ]
+99 silly gunzTarPerm extractEntry src/__scope/evaluation/object.js
+100 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/object.js', 436, 420 ]
+101 silly gunzTarPerm extractEntry src/__scope/evaluation/regexp.js
+102 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/regexp.js', 436, 420 ]
+103 silly gunzTarPerm extractEntry src/__scope/evaluation/string/index.js
+104 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/string/index.js', 436, 420 ]
+105 silly gunzTarPerm extractEntry src/__scope/evaluation/string/parse.js
+106 silly gunzTarPerm modified mode [ 'src/__scope/evaluation/string/parse.js', 436, 420 ]
+107 silly gunzTarPerm extractEntry .jshintrc
+108 silly gunzTarPerm extractEntry test/basics.js
+109 silly gunzTarPerm modified mode [ 'test/basics.js', 436, 420 ]
+110 silly gunzTarPerm extractEntry test/evaluation.js
+111 silly gunzTarPerm modified mode [ 'test/evaluation.js', 436, 420 ]
+112 silly gunzTarPerm extractEntry test/invocation.js
+113 silly gunzTarPerm modified mode [ 'test/invocation.js', 436, 420 ]
+114 silly gunzTarPerm extractEntry test/fixture.html
+115 silly gunzTarPerm modified mode [ 'test/fixture.html', 436, 420 ]
+116 silly gunzTarPerm extractEntry test/index.html
+117 silly gunzTarPerm modified mode [ 'test/index.html', 436, 420 ]
+118 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+119 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+120 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+121 silly lockFile 6c4e53e0-20735-0-5091952702496201-tmp-tgz tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/tmp.tgz
+122 verbose tar pack [ '/home/simon/.npm/scope/0.5.5/package.tgz',
+122 verbose tar pack   '/home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package' ]
+123 verbose tarball /home/simon/.npm/scope/0.5.5/package.tgz
+124 verbose folder /home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+125 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+126 verbose lock tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package /home/simon/.npm/b1406cb4-20735-0-5091952702496201-package.lock
+127 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+128 verbose lock tar:///home/simon/.npm/scope/0.5.5/package.tgz /home/simon/.npm/3b6630ef-imon-npm-scope-0-5-5-package-tgz.lock
+129 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+130 silly lockFile b1406cb4-20735-0-5091952702496201-package tar:///home/simon/tmp/npm-20456-8G3sx76B/1400856020735-0.5091952702496201/package
+131 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+132 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+133 silly lockFile 0be3974d-me-simon-npm-scope-0-5-5-package /home/simon/.npm/scope/0.5.5/package
+134 verbose lock /home/simon/.npm/scope/0.5.5/package /home/simon/.npm/0be3974d-me-simon-npm-scope-0-5-5-package.lock
+135 silly lockFile 0be3974d-me-simon-npm-scope-0-5-5-package /home/simon/.npm/scope/0.5.5/package
+136 silly lockFile 0be3974d-me-simon-npm-scope-0-5-5-package /home/simon/.npm/scope/0.5.5/package
+137 verbose tar unpack /home/simon/.npm/scope/0.5.5/package.tgz
+138 silly lockFile 7959d1a6-me-simon-npm-scope-0-5-5-package tar:///home/simon/.npm/scope/0.5.5/package
+139 verbose lock tar:///home/simon/.npm/scope/0.5.5/package /home/simon/.npm/7959d1a6-me-simon-npm-scope-0-5-5-package.lock
+140 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+141 verbose lock tar:///home/simon/.npm/scope/0.5.5/package.tgz /home/simon/.npm/3b6630ef-imon-npm-scope-0-5-5-package-tgz.lock
+142 silly gunzTarPerm modes [ '755', '644' ]
+143 silly gunzTarPerm extractEntry package.json
+144 silly gunzTarPerm extractEntry .npmignore
+145 silly gunzTarPerm extractEntry README.md
+146 silly gunzTarPerm extractEntry Gruntfile.js
+147 silly gunzTarPerm extractEntry amdconfig.js
+148 silly gunzTarPerm extractEntry bower.json
+149 silly gunzTarPerm extractEntry TODO
+150 silly gunzTarPerm extractEntry .editorconfig
+151 silly gunzTarPerm extractEntry .jshintrc
+152 silly gunzTarPerm extractEntry built/scope.dev.js
+153 silly gunzTarPerm extractEntry built/scope.js
+154 silly gunzTarPerm extractEntry demo/main.js
+155 silly gunzTarPerm extractEntry demo/main.html
+156 silly gunzTarPerm extractEntry docs/api.js
+157 silly gunzTarPerm extractEntry docs/assets/css/external-small.png
+158 silly gunzTarPerm extractEntry docs/assets/css/logo.png
+159 silly gunzTarPerm extractEntry docs/assets/css/main.css
+160 silly gunzTarPerm extractEntry docs/assets/favicon.png
+161 silly gunzTarPerm extractEntry docs/assets/img/spinner.gif
+162 silly gunzTarPerm extractEntry docs/assets/index.html
+163 silly gunzTarPerm extractEntry docs/assets/js/api-filter.js
+164 silly gunzTarPerm extractEntry docs/assets/js/api-list.js
+165 silly gunzTarPerm extractEntry docs/assets/js/api-search.js
+166 silly gunzTarPerm extractEntry docs/assets/js/apidocs.js
+167 silly gunzTarPerm extractEntry docs/assets/js/yui-prettify.js
+168 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/prettify-min.js
+169 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/CHANGES.html
+170 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/COPYING
+171 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/README.html
+172 silly gunzTarPerm extractEntry docs/assets/vendor/prettify/prettify-min.css
+173 silly gunzTarPerm extractEntry docs/classes/index.html
+174 silly gunzTarPerm extractEntry docs/data.json
+175 silly gunzTarPerm extractEntry docs/files/index.html
+176 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_array.js.html
+177 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_index.js.html
+178 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_object.js.html
+179 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_regexp.js.html
+180 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_string_index.js.html
+181 silly gunzTarPerm extractEntry docs/files/src___scope_evaluation_string_parse.js.html
+182 silly gunzTarPerm extractEntry docs/files/src___scope_invocation.js.html
+183 silly gunzTarPerm extractEntry docs/files/src___scope_iteration.js.html
+184 silly gunzTarPerm extractEntry docs/files/src_index.js.html
+185 silly gunzTarPerm extractEntry docs/index.html
+186 silly gunzTarPerm extractEntry docs/modules/index.html
+187 silly gunzTarPerm extractEntry docs/modules/scope.html
+188 silly gunzTarPerm extractEntry index.html
+189 silly gunzTarPerm extractEntry .travis.yml
+190 silly gunzTarPerm extractEntry src/index.js
+191 silly gunzTarPerm extractEntry src/__scope/invocation.js
+192 silly gunzTarPerm extractEntry src/__scope/iteration.js
+193 silly gunzTarPerm extractEntry src/__scope/evaluation/array.js
+194 silly gunzTarPerm extractEntry src/__scope/evaluation/index.js
+195 silly gunzTarPerm extractEntry src/__scope/evaluation/object.js
+196 silly gunzTarPerm extractEntry src/__scope/evaluation/regexp.js
+197 silly gunzTarPerm extractEntry src/__scope/evaluation/string/index.js
+198 silly gunzTarPerm extractEntry src/__scope/evaluation/string/parse.js
+199 silly gunzTarPerm extractEntry test/basics.js
+200 silly gunzTarPerm extractEntry test/evaluation.js
+201 silly gunzTarPerm extractEntry test/invocation.js
+202 silly gunzTarPerm extractEntry test/fixture.html
+203 silly gunzTarPerm extractEntry test/index.html
+204 silly lockFile 7959d1a6-me-simon-npm-scope-0-5-5-package tar:///home/simon/.npm/scope/0.5.5/package
+205 silly lockFile 7959d1a6-me-simon-npm-scope-0-5-5-package tar:///home/simon/.npm/scope/0.5.5/package
+206 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+207 silly lockFile 3b6630ef-imon-npm-scope-0-5-5-package-tgz tar:///home/simon/.npm/scope/0.5.5/package.tgz
+208 verbose chmod /home/simon/.npm/scope/0.5.5/package.tgz 644
+209 verbose chown /home/simon/.npm/scope/0.5.5/package.tgz [ 1000, 1000 ]
+210 silly lockFile 3a52ce78- .
+211 silly lockFile 3a52ce78- .
+212 silly publish { name: 'scope',
+212 silly publish   main: './src',
+212 silly publish   version: '0.5.5',
+212 silly publish   description: 'Some module...',
+212 silly publish   repository: { type: 'git', url: 'https://github.com/simonfan/scope.git' },
+212 silly publish   dependencies:
+212 silly publish    { amdefine: '>=0.1.0',
+212 silly publish      lodash: '~2.4.1',
+212 silly publish      subject: '~0.5.8',
+212 silly publish      deep: 'git://github.com/simonfan/deep.git' },
+212 silly publish   devDependencies:
+212 silly publish    { grunt: '~0.4.2',
+212 silly publish      'grunt-contrib-connect': '~0.5.0',
+212 silly publish      'grunt-bower-requirejs': '~0.7.1',
+212 silly publish      'grunt-contrib-watch': '~0.5.3',
+212 silly publish      'grunt-contrib-yuidoc': '~0.5.0',
+212 silly publish      'grunt-contrib-jshint': '~0.7.2',
+212 silly publish      'grunt-contrib-requirejs': '~0.4.1',
+212 silly publish      'grunt-concurrent': '~0.5.0',
+212 silly publish      should: '~2.1.0',
+212 silly publish      mocha: '~1.15.0',
+212 silly publish      'grunt-simple-mocha': '~0.4.0' },
+212 silly publish   scripts: { test: 'mocha' },
+212 silly publish   readme: '# scope[![Build Status](https://secure.travis-ci.org/simonfan/scope.png?branch=master)](http://travis-ci.org/simonfan/scope)\n\nSome module...\n',
+212 silly publish   readmeFilename: 'README.md',
+212 silly publish   bugs: { url: 'https://github.com/simonfan/scope/issues' },
+212 silly publish   homepage: 'https://github.com/simonfan/scope',
+212 silly publish   _id: 'scope@0.5.5',
+212 silly publish   dist: { shasum: '1110721cef43e90ec32fa2b7637e9ee567bcaba6' },
+212 silly publish   _from: '.' }
+213 verbose url raw scope
+214 verbose url resolving [ 'https://registry.npmjs.org/', './scope' ]
+215 verbose url resolved https://registry.npmjs.org/scope
+216 info trying registry request attempt 1 at 11:40:21
+217 http PUT https://registry.npmjs.org/scope
+218 http 403 https://registry.npmjs.org/scope
+219 info trying registry request attempt 1 at 11:40:23
+220 http PUT https://registry.npmjs.org/scope
+221 http 403 https://registry.npmjs.org/scope
+222 error publish Failed PUT response 403
+223 error Error: forbidden user: simonfan not authorized to modify scope
+223 error Changed: time.modified "2011-07-07T04:36:17.818Z" -> "2014-05-23T14:39:34.527Z"
+223 error Changed: readme "" -> "# scope[![Build Status](https://secure.travis-ci.org/simonfan/scope.png?branch=master)](http://travis-ci.org/simonfan/scope)\u000a\u000aSome module...\u000a": scope
+223 error     at RegClient.<anonymous> (/home/simon/node_modules/lib/node_modules/npm/node_modules/npm-registry-client/lib/request.js:272:14)
+223 error     at Request.self.callback (/home/simon/node_modules/lib/node_modules/npm/node_modules/request/request.js:129:22)
+223 error     at Request.EventEmitter.emit (events.js:98:17)
+223 error     at Request.<anonymous> (/home/simon/node_modules/lib/node_modules/npm/node_modules/request/request.js:873:14)
+223 error     at Request.EventEmitter.emit (events.js:117:20)
+223 error     at IncomingMessage.<anonymous> (/home/simon/node_modules/lib/node_modules/npm/node_modules/request/request.js:824:12)
+223 error     at IncomingMessage.EventEmitter.emit (events.js:117:20)
+223 error     at _stream_readable.js:920:16
+223 error     at process._tickCallback (node.js:415:13)
+224 error If you need help, you may report this log at:
+224 error     <http://github.com/isaacs/npm/issues>
+224 error or email it to:
+224 error     <npm-@googlegroups.com>
+225 error System Linux 3.13.0-24-generic
+226 error command "node" "/home/simon/node_modules/bin/npm" "publish"
+227 error cwd /home/simon/Desktop/code/shared/scope
+228 error node -v v0.10.21
+229 error npm -v 1.3.13
+230 verbose exit [ 1, true ]
