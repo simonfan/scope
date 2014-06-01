@@ -674,17 +674,17 @@ define('__scope/invocation',['require','exports','module','lodash'],function (re
 	 */
 	exports.invoke = function invoke(fn, scopeArgs /*, arg, arg, ... */) {
 
-		var fnName = fn;
-
 		// [0] get fn
 		if (_.isString(fn)) {
-			fn = this[fnName];
+			fn = this[fn];
+
+			if (!_.isFunction(fn)) {
+				throw new Error('scope invoke error: fn ' + fn + ' not a function.');
+			}
 		}
 
 		if (!_.isFunction(fn)) {
-
-
-			throw new Error('scope invoke error: fn ' + fnName + ' not a function.');
+			throw new TypeError('scope invoke error: ' + fn + ' is not a function.');
 		}
 
 		// [1] get scopeArgs\
