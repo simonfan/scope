@@ -136,8 +136,11 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 		} else if (match[2]) {
 			// EVALUATED
 		//	console.log('EVALUATED: ' + match[2]);
-			res.type     = 'evaluated';
-			res.value    = match[2];
+
+			// special keyword $this
+			var value = match[2];
+			res.type     = value === 'this' ? 'special' : 'evaluated';
+			res.value    = value;
 
 
 		} else if (match[3]) {
@@ -194,6 +197,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
 	var valueMatcher = new RegExp(valueMatcherString);
 	function parseValueString(str) {
+
 		var res = {},
 			match = str.match(valueMatcher);
 
@@ -333,6 +337,9 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 			// object
 			res = evaluateObject(scope, criterion.value, options);
 
+		} else if (criterion.type === 'special' && criterion.value === 'this') {
+			// special
+			res = scope;
 		}
 
 		return res;
@@ -374,19 +381,10 @@ define('__scope/evaluation/string/index',['require','exports','module','lodash',
 
 
 	function evaluateValueString(scope, criteria, options) {
+		// [1] parse criteria
+		criteria = parseArgumentsStr(criteria);
 
-		// check if criteria is equal to '$this'
-		if (criteria === '$this') {
-
-			return scope;
-
-		} else {
-
-			// [1] parse criteria
-			criteria = parseArgumentsStr(criteria);
-
-			return evaluate(scope, criteria, options);
-		}
+		return evaluate(scope, criteria, options);
 	}
 
 

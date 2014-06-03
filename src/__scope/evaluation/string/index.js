@@ -41,6 +41,9 @@ define(function (require, exports, module) {
 			// object
 			res = evaluateObject(scope, criterion.value, options);
 
+		} else if (criterion.type === 'special' && criterion.value === 'this') {
+			// special
+			res = scope;
 		}
 
 		return res;
@@ -82,19 +85,10 @@ define(function (require, exports, module) {
 
 
 	function evaluateValueString(scope, criteria, options) {
+		// [1] parse criteria
+		criteria = parseArgumentsStr(criteria);
 
-		// check if criteria is equal to '$this'
-		if (criteria === '$this') {
-
-			return scope;
-
-		} else {
-
-			// [1] parse criteria
-			criteria = parseArgumentsStr(criteria);
-
-			return evaluate(scope, criteria, options);
-		}
+		return evaluate(scope, criteria, options);
 	}
 
 

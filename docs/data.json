@@ -125,7 +125,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/index.js",
-            "line": 49,
+            "line": 52,
             "description": "Evaluates an object criteria\n\nPERHAPS SHOULD MERGE WITH OBJECT EVALUATOR",
             "itemtype": "method",
             "name": "evaluateObject",
@@ -160,7 +160,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 62,
+            "line": 65,
             "description": "The string that will match out the type and effective value.",
             "itemtype": "property",
             "name": "valueMatcherString",
@@ -169,13 +169,13 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 87,
+            "line": 90,
             "description": "(\\w+) LITERAL\n\\$([^,]) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
             "class": ""
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 103,
+            "line": 107,
             "itemtype": "property",
             "name": "objectValueMatcherString",
             "type": "{String}",
@@ -183,7 +183,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 121,
+            "line": 125,
             "description": "Parses a string that represents an object",
             "itemtype": "method",
             "name": "parseObjectString",
@@ -202,7 +202,7 @@
         },
         {
             "file": "src/__scope/evaluation/string/parse.js",
-            "line": 167,
+            "line": 171,
             "description": "Parses a string that represents an arrray.",
             "params": [
                 {
@@ -597,11 +597,11 @@
         },
         {
             "message": "Missing item type\n(\\w+) LITERAL\n\\$([^,]) EVALUATED\n\\[\\s*(.*?)\\s*\\] ARRAY\n\\{\\s*(.*?)\\s*\\} OBJECT",
-            "line": " src/__scope/evaluation/string/parse.js:87"
+            "line": " src/__scope/evaluation/string/parse.js:90"
         },
         {
             "message": "Missing item type\nParses a string that represents an arrray.",
-            "line": " src/__scope/evaluation/string/parse.js:167"
+            "line": " src/__scope/evaluation/string/parse.js:171"
         },
         {
             "message": "Missing item type\nThe interface.",

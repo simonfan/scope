@@ -188,6 +188,8 @@
 			it('$this', function () {
 
 				this.local1.evaluate('$this').should.eql(this.local1);
+
+				this.local1.evaluate('[$this]').should.eql([this.local1]);
 			});
 		});
 

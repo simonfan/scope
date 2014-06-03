@@ -35,8 +35,11 @@ define(function (require, exports, module) {
 		} else if (match[2]) {
 			// EVALUATED
 		//	console.log('EVALUATED: ' + match[2]);
-			res.type     = 'evaluated';
-			res.value    = match[2];
+
+			// special keyword $this
+			var value = match[2];
+			res.type     = value === 'this' ? 'special' : 'evaluated';
+			res.value    = value;
 
 
 		} else if (match[3]) {
@@ -93,6 +96,7 @@ define(function (require, exports, module) {
 	// sample arguments string: "literal, $evaluated, {$arg3, key: $arg4}"
 	var valueMatcher = new RegExp(valueMatcherString);
 	function parseValueString(str) {
+
 		var res = {},
 			match = str.match(valueMatcher);
 

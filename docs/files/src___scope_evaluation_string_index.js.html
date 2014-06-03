@@ -129,6 +129,9 @@ define(function (require, exports, module) {
 			// object
 			res = evaluateObject(scope, criterion.value, options);
 
+		} else if (criterion.type === &#x27;special&#x27; &amp;&amp; criterion.value === &#x27;this&#x27;) {
+			// special
+			res = scope;
 		}
 
 		return res;
@@ -170,19 +173,10 @@ define(function (require, exports, module) {
 
 
 	function evaluateValueString(scope, criteria, options) {
+		// [1] parse criteria
+		criteria = parseArgumentsStr(criteria);
 
-		// check if criteria is equal to &#x27;$this&#x27;
-		if (criteria === &#x27;$this&#x27;) {
-
-			return scope;
-
-		} else {
-
-			// [1] parse criteria
-			criteria = parseArgumentsStr(criteria);
-
-			return evaluate(scope, criteria, options);
-		}
+		return evaluate(scope, criteria, options);
 	}
 
 
