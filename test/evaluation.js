@@ -182,6 +182,16 @@
 		});
 
 
+		describe('special keywords', function () {
+
+
+			it('$this', function () {
+
+				this.local1.evaluate('$this').should.eql(this.local1);
+			});
+		});
+
+
 /*
 		it("evaluate('object:prop1, prop2, prop3')", function () {
 			this.local1.evaluate('object: id, v2, v4')

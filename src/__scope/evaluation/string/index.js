@@ -83,11 +83,18 @@ define(function (require, exports, module) {
 
 	function evaluateValueString(scope, criteria, options) {
 
-		// [1] parse criteria
-		criteria = parseArgumentsStr(criteria);
+		// check if criteria is equal to '$this'
+		if (criteria === '$this') {
 
-		return evaluate(scope, criteria, options);
+			return scope;
 
+		} else {
+
+			// [1] parse criteria
+			criteria = parseArgumentsStr(criteria);
+
+			return evaluate(scope, criteria, options);
+		}
 	}
 
 

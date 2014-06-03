@@ -171,11 +171,18 @@ define(function (require, exports, module) {
 
 	function evaluateValueString(scope, criteria, options) {
 
-		// [1] parse criteria
-		criteria = parseArgumentsStr(criteria);
+		// check if criteria is equal to &#x27;$this&#x27;
+		if (criteria === &#x27;$this&#x27;) {
 
-		return evaluate(scope, criteria, options);
+			return scope;
 
+		} else {
+
+			// [1] parse criteria
+			criteria = parseArgumentsStr(criteria);
+
+			return evaluate(scope, criteria, options);
+		}
 	}
 
 
