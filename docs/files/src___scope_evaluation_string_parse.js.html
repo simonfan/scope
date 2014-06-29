@@ -160,7 +160,7 @@ define(function (require, exports, module) {
 	var whitespace = &#x27;\\s*&#x27;,
 		// no brackets([), braces({), nor commas(,)
 		// are allowed in literal values
-		literal    = &#x27;([^$[{,]+)&#x27;,
+		literal    = &#x27;([^$[{,\\s]+)&#x27;,
 		evaluated  = &#x27;\\$([^,]+)?&#x27;,
 		array      = &#x27;\\[&#x27; + whitespace + &#x27;(.*?)&#x27; + whitespace + &#x27;\\](?!.*?\\])&#x27;,
 		object     = &#x27;\\{&#x27; + whitespace + &#x27;(.*?)&#x27; + whitespace + &#x27;\\}(?!.*?\\})&#x27;;
@@ -202,7 +202,7 @@ define(function (require, exports, module) {
 		whitespace + &#x27;(?:&#x27;,
 			evaluated + whitespace + &#x27;(?:,|$)|&#x27;,
 			&#x27;(?:&#x27;,
-				literal,
+				literal + whitespace,
 				&#x27;:&#x27; + whitespace,
 				&#x27;(.*?)&#x27; + whitespace + &#x27;(?:,(?!.*?})|$)&#x27;,
 			&#x27;)&#x27;,

@@ -124,7 +124,7 @@
 		it("deep string object", function () {
 
 
-			this.local1.evaluate('[literal, $v1, { key: { $v2, key2: { $v3 } } }]')
+			this.local1.evaluate('[literal, $v1, { key : { $v2, key2: { $v3 } } }]')
 				.should.eql([
 					'literal',
 					'g11',
@@ -192,6 +192,16 @@
 				this.local1.evaluate('[$this]').should.eql([this.local1]);
 			});
 		});
+
+
+		it('evaluate "quote" enclosed strings as literals', function () {
+
+			this.local1.evaluate('{ route/@id: $v5.property }')
+				.should.eql({
+					'route/@id': 'immediate-value'
+				});
+
+		})
 
 
 /*

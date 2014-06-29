@@ -173,7 +173,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 	var whitespace = '\\s*',
 		// no brackets([), braces({), nor commas(,)
 		// are allowed in literal values
-		literal    = '([^$[{,]+)',
+		literal    = '([^$[{,\\s]+)',
 		evaluated  = '\\$([^,]+)?',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
@@ -215,7 +215,7 @@ define('__scope/evaluation/string/parse',['require','exports','module','lodash']
 		whitespace + '(?:',
 			evaluated + whitespace + '(?:,|$)|',
 			'(?:',
-				literal,
+				literal + whitespace,
 				':' + whitespace,
 				'(.*?)' + whitespace + '(?:,(?!.*?})|$)',
 			')',

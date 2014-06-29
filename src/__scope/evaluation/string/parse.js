@@ -72,7 +72,7 @@ define(function (require, exports, module) {
 	var whitespace = '\\s*',
 		// no brackets([), braces({), nor commas(,)
 		// are allowed in literal values
-		literal    = '([^$[{,]+)',
+		literal    = '([^$[{,\\s]+)',
 		evaluated  = '\\$([^,]+)?',
 		array      = '\\[' + whitespace + '(.*?)' + whitespace + '\\](?!.*?\\])',
 		object     = '\\{' + whitespace + '(.*?)' + whitespace + '\\}(?!.*?\\})';
@@ -114,7 +114,7 @@ define(function (require, exports, module) {
 		whitespace + '(?:',
 			evaluated + whitespace + '(?:,|$)|',
 			'(?:',
-				literal,
+				literal + whitespace,
 				':' + whitespace,
 				'(.*?)' + whitespace + '(?:,(?!.*?})|$)',
 			')',
